@@ -52,17 +52,6 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
-// Color palette from color-pallet.md
-const colorPalette = {
-  white: "#FFF",
-  parchmentCream: "#F8E9D4",
-  lumiLavender: "#D8BFD8",
-  softAmber: "#E89A4F",
-  sageGreen: "#B8D1B8",
-  dustyRose: "#D89797",
-  deepSlate: "#6A6A6A",
-};
-
 const componentsByCategory = {
   "Form Elements": [
     { name: "Button", path: "button" },
@@ -190,61 +179,56 @@ const componentExamples: Record<string, React.ReactNode> = {
   progress: <Progress value={50} />,
   tabs: (
     <div className="w-full">
-      <style jsx>{`
-        .custom-tabs-list {
-          background-color: ${colorPalette.parchmentCream};
-          border-radius: 0.5rem;
-          padding: 0.25rem;
-        }
-        .custom-tab {
-          color: ${colorPalette.deepSlate};
-          padding: 0.5rem 1rem;
-          border-radius: 0.375rem;
-          font-weight: 500;
-          transition: all 0.2s ease;
-        }
-        .custom-tab[data-state="active"] {
-          background-color: ${colorPalette.lumiLavender};
-          color: ${colorPalette.deepSlate};
-        }
-        .custom-tab-content {
-          padding: 1rem;
-          border: 1px solid ${colorPalette.lumiLavender};
-          border-radius: 0.5rem;
-          margin-top: 0.5rem;
-          background-color: ${colorPalette.white};
-        }
-      `}</style>
-      <Tabs defaultValue="tab1" className="w-full">
-        <TabsList className="custom-tabs-list">
-          <TabsTrigger value="tab1" className="custom-tab">
-            Lavender
-          </TabsTrigger>
-          <TabsTrigger value="tab2" className="custom-tab">
-            Amber
-          </TabsTrigger>
-          <TabsTrigger value="tab3" className="custom-tab">
-            Sage
-          </TabsTrigger>
+      <Tabs defaultValue="lavender" className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="lavender">Lavender</TabsTrigger>
+          <TabsTrigger value="amber">Amber</TabsTrigger>
+          <TabsTrigger value="sage">Sage</TabsTrigger>
         </TabsList>
-        <TabsContent value="tab1" className="custom-tab-content">
-          <div style={{ color: colorPalette.deepSlate }}>
-            <h3 className="text-lg font-medium mb-2">Lumi Lavender</h3>
-            <p>Color code: {colorPalette.lumiLavender}</p>
-          </div>
-        </TabsContent>
-        <TabsContent value="tab2" className="custom-tab-content">
-          <div style={{ color: colorPalette.deepSlate }}>
-            <h3 className="text-lg font-medium mb-2">Soft Amber</h3>
-            <p>Color code: {colorPalette.softAmber}</p>
-          </div>
-        </TabsContent>
-        <TabsContent value="tab3" className="custom-tab-content">
-          <div style={{ color: colorPalette.deepSlate }}>
-            <h3 className="text-lg font-medium mb-2">Sage Green</h3>
-            <p>Color code: {colorPalette.sageGreen}</p>
-          </div>
-        </TabsContent>
+        <div className="mt-2">
+          <TabsContent value="lavender">
+            <Tabs defaultValue="tab1" variant="lavender" className="w-full">
+              <TabsList>
+                <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+              </TabsList>
+              <TabsContent value="tab1" className="p-2 border rounded-md mt-2">
+                Lavender variant
+              </TabsContent>
+              <TabsContent value="tab2" className="p-2 border rounded-md mt-2">
+                Tab 2 content
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+          <TabsContent value="amber">
+            <Tabs defaultValue="tab1" variant="amber" className="w-full">
+              <TabsList>
+                <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+              </TabsList>
+              <TabsContent value="tab1" className="p-2 border rounded-md mt-2">
+                Amber variant
+              </TabsContent>
+              <TabsContent value="tab2" className="p-2 border rounded-md mt-2">
+                Tab 2 content
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+          <TabsContent value="sage">
+            <Tabs defaultValue="tab1" variant="sage" className="w-full">
+              <TabsList>
+                <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+              </TabsList>
+              <TabsContent value="tab1" className="p-2 border rounded-md mt-2">
+                Sage variant
+              </TabsContent>
+              <TabsContent value="tab2" className="p-2 border rounded-md mt-2">
+                Tab 2 content
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   ),

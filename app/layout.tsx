@@ -1,26 +1,33 @@
 import type { Metadata } from "next";
-import { Poppins, Comfortaa } from "next/font/google";
+import { Kalam, Patrick_Hand, Handlee } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/lib/components/ThemeProvider";
 import { ThemeSwitcher } from "@/lib/components/ThemeSwitcher";
 import Link from "next/link";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const kalam = Kalam({
+  variable: "--font-kalam",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
 });
 
-const comfortaa = Comfortaa({
-  variable: "--font-comfortaa",
+const patrickHand = Patrick_Hand({
+  variable: "--font-patrick-hand",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+});
+
+const handlee = Handlee({
+  variable: "--font-handlee",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
-  title: "Daily Pomo",
-  description: "Your beautiful daily pomodoro companion",
+  title: "LumiDaily",
+  description:
+    "Your mindful daily pomodoro companion - designed for focus and well-being",
 };
 
 export default function RootLayout({
@@ -30,19 +37,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} ${comfortaa.variable} antialiased`}>
+      <body
+        className={`${kalam.variable} ${patrickHand.variable} ${handlee.variable} antialiased`}
+      >
         <ThemeProvider>
-          <header className="border-b">
-            <div className="container mx-auto flex h-14 items-center justify-between">
-              <div className="flex items-center">
-                <Link href="/" className="font-bold">
+          <header className="border-b border-border/30 paper-shadow">
+            <div className="container mx-auto flex h-16 items-center justify-between p-grid-2">
+              <div className="flex items-center gap-grid-3">
+                <Link
+                  href="/"
+                  className="font-heading text-xl font-normal gentle-hover gentle-wobble"
+                >
                   LumiDaily
                 </Link>
-                <nav className="ml-6 flex space-x-4 text-sm">
-                  <Link href="/" className="hover:text-foreground/80">
+                <nav className="flex space-x-6 text-sm">
+                  <Link
+                    href="/"
+                    className="hover:text-primary transition-colors duration-200 ease-out"
+                  >
                     Home
                   </Link>
-                  <Link href="/components" className="hover:text-foreground/80">
+                  <Link
+                    href="/components"
+                    className="hover:text-primary transition-colors duration-200 ease-out"
+                  >
                     Components
                   </Link>
                 </nav>
@@ -50,7 +68,7 @@ export default function RootLayout({
               <ThemeSwitcher />
             </div>
           </header>
-          <main>{children}</main>
+          <main className="min-h-screen">{children}</main>
           <Toaster />
         </ThemeProvider>
       </body>
