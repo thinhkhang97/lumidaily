@@ -252,43 +252,51 @@
   }
 
   .paper-shadow-lg {
-    box-shadow: 0 4px 6px rgba(106, 106, 106, 0.07),
-      0 2px 4px rgba(106, 106, 106, 0.06), 0 1px 2px rgba(106, 106, 106, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(106, 106, 106, 0.1),
+      0 2px 4px -1px rgba(106, 106, 106, 0.06);
   }
 
-  /* Gentle Animations */
   .gentle-hover {
-    transition: all 0.2s ease-out;
+    transition: all 0.3s ease;
   }
 
   .gentle-hover:hover {
-    transform: translateY(-1px) scale(1.02);
+    transform: translateY(-2px);
+  }
+
+  .gentle-wobble {
+    transition: all 0.3s ease;
   }
 
   .gentle-wobble:hover {
-    animation: gentle-wobble 0.3s ease-out;
+    animation: gentle-wobble 0.8s ease-in-out;
   }
 
   .soft-glow {
-    box-shadow: 0 0 20px rgba(216, 191, 216, 0.3);
+    transition: box-shadow 0.3s ease;
   }
 
   .soft-focus:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(232, 154, 79, 0.2);
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+    transition: box-shadow 0.3s ease;
   }
 
-  /* Animation Keyframes */
   @keyframes gentle-wobble {
-    0%,
-    100% {
+    0% {
       transform: rotate(0deg);
     }
     25% {
-      transform: rotate(1deg);
+      transform: rotate(2deg) translateY(-1px);
+    }
+    50% {
+      transform: rotate(-1deg) translateY(-2px);
     }
     75% {
-      transform: rotate(-1deg);
+      transform: rotate(1deg) translateY(-1px);
+    }
+    100% {
+      transform: rotate(0deg);
     }
   }
 

@@ -52,6 +52,9 @@ import {
 } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { TaskTable } from "@/components/TaskTable";
+import { TaskList } from "@/components/TaskList";
+import { Task } from "@/lib/types";
 
 const componentsByCategory = {
   "Form Elements": [
@@ -78,7 +81,33 @@ const componentsByCategory = {
   ],
   "Feedback & Notifications": [{ name: "Sonner", path: "sonner" }],
   "Theme & Providers": [{ name: "Theme Provider", path: "theme-provider" }],
+  "Application Components": [
+    { name: "Task Table", path: "task-table" },
+    { name: "Task List", path: "task-list" },
+  ],
 };
+
+// Mock tasks for the TaskTable and TaskList examples
+const mockTasks: Task[] = [
+  {
+    id: "1",
+    name: "Complete project proposal",
+    plannedSessions: 3,
+    completedSessions: 2,
+  },
+  {
+    id: "2",
+    name: "Review documentation",
+    plannedSessions: 2,
+    completedSessions: 2,
+  },
+  {
+    id: "3",
+    name: "Prepare presentation",
+    plannedSessions: 4,
+    completedSessions: 1,
+  },
+];
 
 // Component examples for preview
 const componentExamples: Record<string, React.ReactNode> = {
@@ -283,6 +312,30 @@ const componentExamples: Record<string, React.ReactNode> = {
   ),
   "theme-provider": (
     <div className="p-2 border rounded-md">Theme Provider Example</div>
+  ),
+  "task-table": (
+    <div className="max-h-[300px] overflow-auto">
+      <TaskTable
+        tasks={mockTasks}
+        onEdit={() => {}}
+        onDelete={() => {}}
+        onToggleSession={() => {}}
+        onStartPomodoro={() => {}}
+      />
+    </div>
+  ),
+  "task-list": (
+    <div className="max-h-[400px] overflow-auto">
+      <TaskList
+        tasks={mockTasks}
+        onAddTask={() => {}}
+        onEditTask={() => {}}
+        onDeleteTask={() => {}}
+        onToggleSession={() => {}}
+        onStartPomodoro={() => {}}
+        onShowShareDialog={() => {}}
+      />
+    </div>
   ),
 };
 
