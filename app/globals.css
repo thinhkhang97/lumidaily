@@ -56,9 +56,14 @@
   --lumi-parchment-cream: #f8e9d4;
   --lumi-lavender: #d8bfd8;
   --lumi-soft-amber: #e89a4f;
+  --lumi-soft-amber-rgb: 232, 154, 79;
   --lumi-sage-green: #b8d1b8;
   --lumi-dusty-rose: #d89797;
   --lumi-deep-slate: #6a6a6a;
+
+  /* Timer component colors */
+  --timer-track: var(--muted);
+  --timer-progress: var(--primary);
 
   /* Typography */
   --font-kalam: "Kalam", cursive;
@@ -248,14 +253,15 @@
 
   .paper-shadow {
     box-shadow: 0 1px 3px rgba(106, 106, 106, 0.1),
-      0 1px 2px rgba(106, 106, 106, 0.06);
+      0 2px 6px rgba(106, 106, 106, 0.05);
   }
 
   .paper-shadow-lg {
-    box-shadow: 0 4px 6px -1px rgba(106, 106, 106, 0.1),
-      0 2px 4px -1px rgba(106, 106, 106, 0.06);
+    box-shadow: 0 2px 5px rgba(106, 106, 106, 0.1),
+      0 4px 12px rgba(106, 106, 106, 0.05);
   }
 
+  /* Gentle Interactions */
   .gentle-hover {
     transition: all 0.3s ease;
   }
@@ -265,11 +271,11 @@
   }
 
   .gentle-wobble {
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
   }
 
   .gentle-wobble:hover {
-    animation: gentle-wobble 0.8s ease-in-out;
+    animation: gentle-wobble 1s ease infinite;
   }
 
   .soft-glow {
@@ -277,23 +283,43 @@
   }
 
   .soft-focus:focus {
+    box-shadow: 0 0 0 2px rgba(232, 154, 79, 0.3);
     outline: none;
-    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
-    transition: box-shadow 0.3s ease;
   }
 
+  /* Circle Timer Animation */
+  @keyframes timer-pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(var(--lumi-soft-amber-rgb, 232, 154, 79), 0.7);
+    }
+    70% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(var(--lumi-soft-amber-rgb, 232, 154, 79), 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(var(--lumi-soft-amber-rgb, 232, 154, 79), 0);
+    }
+  }
+
+  .timer-completed {
+    animation: timer-pulse 0.8s ease-out;
+  }
+
+  /* Animations */
   @keyframes gentle-wobble {
     0% {
       transform: rotate(0deg);
     }
     25% {
-      transform: rotate(2deg) translateY(-1px);
+      transform: rotate(1deg) translateY(-1px);
     }
     50% {
-      transform: rotate(-1deg) translateY(-2px);
+      transform: rotate(0deg);
     }
     75% {
-      transform: rotate(1deg) translateY(-1px);
+      transform: rotate(-1deg) translateY(-1px);
     }
     100% {
       transform: rotate(0deg);
@@ -301,28 +327,29 @@
   }
 
   @keyframes soft-fade-in {
-    from {
+    0% {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(10px);
     }
-    to {
+    100% {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
   .soft-fade-in {
-    animation: soft-fade-in 0.3s ease-out;
+    animation: soft-fade-in 0.6s ease-out forwards;
   }
 
-  /* Accessibility: Respect reduced motion preference */
+  /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     *,
-    *::before,
-    *::after {
+    ::before,
+    ::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
 
     .gentle-hover:hover {
