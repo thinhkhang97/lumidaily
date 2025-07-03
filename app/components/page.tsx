@@ -20,6 +20,7 @@ import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -62,6 +63,7 @@ const componentsByCategory = {
     { name: "Select", path: "select" },
     { name: "Slider", path: "slider" },
     { name: "Switch", path: "switch" },
+    { name: "Textarea", path: "textarea" },
   ],
   "Layout & Structure": [
     { name: "Avatar", path: "avatar" },
@@ -84,10 +86,10 @@ const componentExamples: Record<string, React.ReactNode> = {
     <div className="flex flex-wrap gap-3">
       <Button variant="default">Primary (Amber)</Button>
       <Button variant="secondary">Secondary (Lavender)</Button>
+      <Button variant="success">Success (Sage)</Button>
       <Button variant="outline">Outline</Button>
-      <Button variant="sage">Sage Green</Button>
-      <Button variant="cream">Parchment Cream</Button>
       <Button variant="destructive">Destructive (Rose)</Button>
+      <Button variant="warning">Warning (Rose)</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="link">Link</Button>
     </div>
@@ -99,6 +101,7 @@ const componentExamples: Record<string, React.ReactNode> = {
     </div>
   ),
   input: <Input placeholder="Input Example" />,
+  textarea: <Textarea placeholder="Textarea Example" />,
   label: <Label>Label Example</Label>,
   select: (
     <Select>
@@ -131,7 +134,7 @@ const componentExamples: Record<string, React.ReactNode> = {
         <p className="text-sm">Card content goes here.</p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" size="sm">
+        <Button variant="secondary" size="sm">
           Cancel
         </Button>
         <Button size="sm" className="ml-2">
@@ -143,7 +146,7 @@ const componentExamples: Record<string, React.ReactNode> = {
   dialog: (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Open Dialog</Button>
+        <Button variant="secondary">Open Dialog</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -157,7 +160,7 @@ const componentExamples: Record<string, React.ReactNode> = {
   "dropdown-menu": (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="secondary">
           Options <ChevronDown className="ml-1 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -236,7 +239,7 @@ const componentExamples: Record<string, React.ReactNode> = {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="outline">Hover me</Button>
+          <Button variant="secondary">Hover me</Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>Tooltip content</p>
@@ -247,7 +250,7 @@ const componentExamples: Record<string, React.ReactNode> = {
   sonner: (
     <div>
       <Button
-        variant="outline"
+        variant="secondary"
         onClick={() => toast("This is a toast notification")}
       >
         Show Toast
@@ -255,7 +258,29 @@ const componentExamples: Record<string, React.ReactNode> = {
       <Toaster />
     </div>
   ),
-  form: <div className="p-2 border rounded-md">Form Example</div>,
+  form: (
+    <div className="space-y-4 w-full max-w-md">
+      <div className="space-y-2">
+        <Label htmlFor="username">Username</Label>
+        <Input id="username" placeholder="Enter your username" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="Enter your email" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="message">Message</Label>
+        <Textarea id="message" placeholder="Enter your message" />
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox id="terms" />
+        <label htmlFor="terms" className="text-sm">
+          Accept terms and conditions
+        </label>
+      </div>
+      <Button>Submit</Button>
+    </div>
+  ),
   "theme-provider": (
     <div className="p-2 border rounded-md">Theme Provider Example</div>
   ),
@@ -344,7 +369,7 @@ function ComponentCard({
         </p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full" asChild>
+        <Button variant="secondary" className="w-full" asChild>
           <Link href={`/components/${path}`}>View Details</Link>
         </Button>
       </CardFooter>

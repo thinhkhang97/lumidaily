@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none soft-focus gentle-hover gentle-wobble paper-shadow",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none gentle-hover gentle-wobble paper-shadow",
   {
     variants: {
       variant: {
@@ -13,9 +13,13 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 hover:paper-shadow-lg border border-primary/20",
 
-        // Secondary button - Outlined with Deep Slate text (from guideline)
+        // Secondary button - Improved with subtle lavender gradient
         secondary:
-          "border-2 border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5 hover:border-foreground/50",
+          "bg-gradient-to-r from-secondary/20 to-secondary/30 text-foreground hover:from-secondary/30 hover:to-secondary/40 border border-secondary/40 hover:border-secondary/60",
+
+        // Outline button - Border with subtle hover
+        outline:
+          "border-2 border-foreground/20 bg-transparent text-foreground hover:bg-foreground/5 hover:border-foreground/40",
 
         // Success variant - Sage Green
         success:
@@ -24,6 +28,17 @@ const buttonVariants = cva(
         // Warning/Info variant - Dusty Rose
         warning:
           "bg-destructive text-white hover:bg-destructive/90 border border-destructive/20",
+
+        // Destructive variant - Dusty Rose (stronger)
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/80 border border-destructive/30",
+
+        // Sage variant - Sage Green with custom styling
+        sage: "bg-accent text-accent-foreground hover:bg-accent/90 border border-accent/20",
+
+        // Cream variant - Parchment Cream with custom styling
+        cream:
+          "bg-card text-card-foreground hover:bg-card/80 border border-foreground/10",
 
         // Brand variant - Lumi Lavender with soft glow
         brand:
