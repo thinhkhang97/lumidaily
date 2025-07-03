@@ -47,7 +47,7 @@ export function TaskTable({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-2">
                     <span
-                      className={`font-heading text-lg font-normal truncate ${
+                      className={`font-kalam text-lg ${
                         isCompleted
                           ? "text-accent-foreground line-through opacity-70"
                           : "text-foreground"
@@ -60,7 +60,7 @@ export function TaskTable({
                     )}
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-lg bg-secondary/20 dark:bg-secondary/10 text-foreground font-body text-sm border border-secondary/30 dark:border-secondary/20">
+                    <span className="inline-flex items-center px-2 py-1 rounded-lg bg-secondary/20 dark:bg-secondary/10 text-foreground font-patrick text-sm border border-secondary/30 dark:border-secondary/20">
                       {task.plannedSessions} sessions
                     </span>
                   </div>
@@ -98,7 +98,7 @@ export function TaskTable({
                   <button
                     key={i}
                     onClick={() => onToggleSession(task.id, i)}
-                    className={`w-8 h-8 rounded-full border-2 transition-all duration-200 gentle-wobble flex items-center justify-center text-xs ${
+                    className={`w-8 h-8 rounded-full border-2 transition-all duration-200 gentle-wobble flex items-center justify-center text-xs font-patrick ${
                       i < task.completedSessions
                         ? "bg-accent border-accent/70 dark:border-accent/60 text-accent-foreground paper-shadow transform rotate-6"
                         : "border-secondary/50 dark:border-secondary/30 hover:border-secondary/70 dark:hover:border-secondary/50 bg-background/70 dark:bg-background/50 hover:bg-secondary/10 dark:hover:bg-secondary/5"
@@ -123,21 +123,21 @@ export function TaskTable({
         <table className="w-full">
           <thead>
             <tr className="border-b-2 border-secondary/20 dark:border-secondary/10">
-              <th className="text-left py-4 px-3 font-heading text-sm font-normal text-foreground/80 dark:text-foreground/70 uppercase tracking-wide">
+              <th className="text-left py-4 px-3 font-kalam text-sm text-foreground/80 dark:text-foreground/70 uppercase tracking-wide">
                 Task Name
               </th>
-              <th className="text-center py-4 px-2 font-heading text-sm font-normal text-foreground/80 dark:text-foreground/70 uppercase tracking-wide w-20">
+              <th className="text-center py-4 px-2 font-kalam text-sm text-foreground/80 dark:text-foreground/70 uppercase tracking-wide w-20">
                 Total
               </th>
-              <th className="text-left py-4 px-2 font-heading text-sm font-normal text-foreground/80 dark:text-foreground/70 uppercase tracking-wide">
+              <th className="text-left py-4 px-2 font-kalam text-sm text-foreground/80 dark:text-foreground/70 uppercase tracking-wide">
                 Sessions
               </th>
-              <th className="text-center py-4 px-3 font-heading text-sm font-normal text-foreground/80 dark:text-foreground/70 uppercase tracking-wide w-32">
+              <th className="text-center py-4 px-3 font-kalam text-sm text-foreground/80 dark:text-foreground/70 uppercase tracking-wide w-32">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y-2 divide-secondary/10 dark:divide-secondary/5">
+          <tbody className="divide-y-2 divide-secondary/10 dark:divide-secondary/5 font-patrick">
             {tasks.map((task) => {
               const nextSession = getNextSessionToStart(task);
               const isCompleted =
@@ -153,7 +153,7 @@ export function TaskTable({
                   <td className="py-4 px-3">
                     <div className="flex items-center space-x-3">
                       <span
-                        className={`font-heading text-lg font-normal ${
+                        className={`font-kalam text-lg ${
                           isCompleted
                             ? "text-accent-foreground line-through opacity-70"
                             : "text-foreground"
@@ -167,7 +167,7 @@ export function TaskTable({
                     </div>
                   </td>
                   <td className="py-4 px-2 text-center">
-                    <span className="inline-flex items-center px-3 py-1 rounded-xl bg-secondary/20 dark:bg-secondary/10 text-foreground font-body text-sm border border-secondary/30 dark:border-secondary/20">
+                    <span className="inline-flex items-center px-3 py-1 rounded-xl bg-secondary/20 dark:bg-secondary/10 text-foreground text-sm border border-secondary/30 dark:border-secondary/20">
                       {task.plannedSessions}
                     </span>
                   </td>
