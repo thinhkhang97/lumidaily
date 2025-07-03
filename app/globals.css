@@ -47,8 +47,8 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0); /* Original background */
   --foreground: oklch(0.145 0 0); /* Original foreground */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card: #f9f9f9; /* Very subtle light gray for minimal distinction */
+  --card-foreground: #6a6a6a; /* Deep Slate for better readability */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: #e89a4f; /* Soft Amber as primary */
@@ -60,8 +60,8 @@
   --accent: #b8d1b8; /* Sage Green */
   --accent-foreground: #6a6a6a; /* Deep Slate */
   --destructive: #d89797; /* Dusty Rose */
-  --border: #f8e9d4; /* Parchment Cream */
-  --input: #f8e9d4; /* Parchment Cream */
+  --border: transparent; /* Transparent border for borderless design */
+  --input: #f5f5f5; /* Very light gray for subtle input fields */
   --ring: #e89a4f; /* Soft Amber */
   --chart-1: #e89a4f; /* Soft Amber */
   --chart-2: #d8bfd8; /* Lumi Lavender */
@@ -74,15 +74,15 @@
   --sidebar-primary-foreground: #fff; /* White */
   --sidebar-accent: #d8bfd8; /* Lumi Lavender */
   --sidebar-accent-foreground: #6a6a6a; /* Deep Slate */
-  --sidebar-border: oklch(0.922 0 0); /* Original sidebar border */
+  --sidebar-border: transparent; /* Transparent border for borderless design */
   --sidebar-ring: #e89a4f; /* Soft Amber */
 }
 
 .dark {
   --background: oklch(0.145 0 0); /* Original dark background */
   --foreground: oklch(0.985 0 0); /* Original dark foreground */
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
+  --card: #1e1e1e; /* Slightly lighter than background for subtle distinction */
+  --card-foreground: #ffffff; /* White text for readability */
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: #e89a4f; /* Soft Amber as primary */
@@ -94,8 +94,8 @@
   --accent: #b8d1b8; /* Sage Green */
   --accent-foreground: #fff; /* White */
   --destructive: #d89797; /* Dusty Rose */
-  --border: oklch(1 0 0 / 10%); /* Original dark border */
-  --input: oklch(1 0 0 / 15%); /* Original dark input */
+  --border: transparent; /* Transparent border for borderless design */
+  --input: rgba(255, 255, 255, 0.05); /* Very subtle white for input fields */
   --ring: #e89a4f; /* Soft Amber */
   --chart-1: #e89a4f; /* Soft Amber */
   --chart-2: #d8bfd8; /* Lumi Lavender */
@@ -108,7 +108,7 @@
   --sidebar-primary-foreground: #fff; /* White */
   --sidebar-accent: #d8bfd8; /* Lumi Lavender */
   --sidebar-accent-foreground: #fff; /* White */
-  --sidebar-border: oklch(1 0 0 / 10%); /* Original dark sidebar border */
+  --sidebar-border: transparent; /* Transparent border for borderless design */
   --sidebar-ring: #e89a4f; /* Soft Amber */
 }
 

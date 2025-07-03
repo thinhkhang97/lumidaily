@@ -5,9 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
+import { Popover } from "@radix-ui/react-popover";
+import { Progress } from "@radix-ui/react-progress";
+import { Tabs } from "@radix-ui/react-tabs";
 import Link from "next/link";
 import React from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { Tooltip } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 // Component examples for preview
 const componentExamples: Record<string, React.ReactNode> = {
@@ -25,7 +32,15 @@ const componentExamples: Record<string, React.ReactNode> = {
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   ),
-  // Add more examples as needed
+  calendar: <Calendar />,
+  card: <Card>Card Example</Card>,
+  dialog: <Dialog>Dialog Example</Dialog>,
+  "dropdown-menu": <DropdownMenu>Dropdown Menu Example</DropdownMenu>,
+  popover: <Popover>Popover Example</Popover>,
+  progress: <Progress value={50} />,
+  tabs: <Tabs>Tabs Example</Tabs>,
+  tooltip: <Tooltip>Tooltip Example</Tooltip>,
+  sonner: <Toaster />,
 };
 
 // List of available components
