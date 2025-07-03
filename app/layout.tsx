@@ -3,6 +3,7 @@ import { Poppins, Comfortaa } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/lib/components/ThemeProvider";
+import { ThemeSwitcher } from "@/lib/components/ThemeSwitcher";
 import Link from "next/link";
 
 const poppins = Poppins({
@@ -32,18 +33,21 @@ export default function RootLayout({
       <body className={`${poppins.variable} ${comfortaa.variable} antialiased`}>
         <ThemeProvider>
           <header className="border-b">
-            <div className="container mx-auto flex h-14 items-center">
-              <Link href="/" className="font-bold">
-                LumiDaily
-              </Link>
-              <nav className="ml-6 flex space-x-4 text-sm">
-                <Link href="/" className="hover:text-foreground/80">
-                  Home
+            <div className="container mx-auto flex h-14 items-center justify-between">
+              <div className="flex items-center">
+                <Link href="/" className="font-bold">
+                  LumiDaily
                 </Link>
-                <Link href="/components" className="hover:text-foreground/80">
-                  Components
-                </Link>
-              </nav>
+                <nav className="ml-6 flex space-x-4 text-sm">
+                  <Link href="/" className="hover:text-foreground/80">
+                    Home
+                  </Link>
+                  <Link href="/components" className="hover:text-foreground/80">
+                    Components
+                  </Link>
+                </nav>
+              </div>
+              <ThemeSwitcher />
             </div>
           </header>
           <main>{children}</main>

@@ -12,6 +12,56 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Calendar, ChevronDown, Settings, User } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
+// Color palette from color-pallet.md
+const colorPalette = {
+  white: "#FFF",
+  parchmentCream: "#F8E9D4",
+  lumiLavender: "#D8BFD8",
+  softAmber: "#E89A4F",
+  sageGreen: "#B8D1B8",
+  dustyRose: "#D89797",
+  deepSlate: "#6A6A6A",
+};
 
 const componentsByCategory = {
   "Form Elements": [
@@ -37,6 +87,194 @@ const componentsByCategory = {
   ],
   "Feedback & Notifications": [{ name: "Sonner", path: "sonner" }],
   "Theme & Providers": [{ name: "Theme Provider", path: "theme-provider" }],
+};
+
+// Component examples for preview
+const componentExamples: Record<string, React.ReactNode> = {
+  button: (
+    <div className="flex flex-wrap gap-3">
+      <Button variant="default">Primary (Amber)</Button>
+      <Button variant="secondary">Secondary (Lavender)</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="sage">Sage Green</Button>
+      <Button variant="cream">Parchment Cream</Button>
+      <Button variant="destructive">Destructive (Rose)</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  ),
+  checkbox: (
+    <div className="flex items-center space-x-2">
+      <Checkbox id="example-checkbox" />
+      <label htmlFor="example-checkbox">Checkbox Example</label>
+    </div>
+  ),
+  input: <Input placeholder="Input Example" />,
+  label: <Label>Label Example</Label>,
+  select: (
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select an option" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="option1">Option 1</SelectItem>
+        <SelectItem value="option2">Option 2</SelectItem>
+        <SelectItem value="option3">Option 3</SelectItem>
+      </SelectContent>
+    </Select>
+  ),
+  slider: <Slider defaultValue={[50]} max={100} step={1} className="w-full" />,
+  switch: <Switch />,
+  avatar: (
+    <Avatar>
+      <AvatarImage src="https://github.com/shadcn.png" />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+  ),
+  calendar: <Calendar className="h-6 w-6" />,
+  card: (
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Card Title</CardTitle>
+        <CardDescription>Card Description</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm">Card content goes here.</p>
+      </CardContent>
+      <CardFooter>
+        <Button variant="outline" size="sm">
+          Cancel
+        </Button>
+        <Button size="sm" className="ml-2">
+          Submit
+        </Button>
+      </CardFooter>
+    </Card>
+  ),
+  dialog: (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Open Dialog</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Dialog Title</DialogTitle>
+          <DialogDescription>Dialog description goes here.</DialogDescription>
+        </DialogHeader>
+        <div className="py-4">Dialog content goes here.</div>
+      </DialogContent>
+    </Dialog>
+  ),
+  "dropdown-menu": (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          Options <ChevronDown className="ml-1 h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  ),
+  popover: <div className="p-2 border rounded-md">Popover Example</div>,
+  progress: <Progress value={50} />,
+  tabs: (
+    <div className="w-full">
+      <style jsx>{`
+        .custom-tabs-list {
+          background-color: ${colorPalette.parchmentCream};
+          border-radius: 0.5rem;
+          padding: 0.25rem;
+        }
+        .custom-tab {
+          color: ${colorPalette.deepSlate};
+          padding: 0.5rem 1rem;
+          border-radius: 0.375rem;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+        .custom-tab[data-state="active"] {
+          background-color: ${colorPalette.lumiLavender};
+          color: ${colorPalette.deepSlate};
+        }
+        .custom-tab-content {
+          padding: 1rem;
+          border: 1px solid ${colorPalette.lumiLavender};
+          border-radius: 0.5rem;
+          margin-top: 0.5rem;
+          background-color: ${colorPalette.white};
+        }
+      `}</style>
+      <Tabs defaultValue="tab1" className="w-full">
+        <TabsList className="custom-tabs-list">
+          <TabsTrigger value="tab1" className="custom-tab">
+            Lavender
+          </TabsTrigger>
+          <TabsTrigger value="tab2" className="custom-tab">
+            Amber
+          </TabsTrigger>
+          <TabsTrigger value="tab3" className="custom-tab">
+            Sage
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" className="custom-tab-content">
+          <div style={{ color: colorPalette.deepSlate }}>
+            <h3 className="text-lg font-medium mb-2">Lumi Lavender</h3>
+            <p>Color code: {colorPalette.lumiLavender}</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2" className="custom-tab-content">
+          <div style={{ color: colorPalette.deepSlate }}>
+            <h3 className="text-lg font-medium mb-2">Soft Amber</h3>
+            <p>Color code: {colorPalette.softAmber}</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3" className="custom-tab-content">
+          <div style={{ color: colorPalette.deepSlate }}>
+            <h3 className="text-lg font-medium mb-2">Sage Green</h3>
+            <p>Color code: {colorPalette.sageGreen}</p>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  ),
+  tooltip: (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline">Hover me</Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Tooltip content</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ),
+  sonner: (
+    <div>
+      <Button
+        variant="outline"
+        onClick={() => toast("This is a toast notification")}
+      >
+        Show Toast
+      </Button>
+      <Toaster />
+    </div>
+  ),
+  form: <div className="p-2 border rounded-md">Form Example</div>,
+  "theme-provider": (
+    <div className="p-2 border rounded-md">Theme Provider Example</div>
+  ),
 };
 
 export default function ComponentsCatalog() {
@@ -103,6 +341,8 @@ function ComponentCard({
   category: string;
   path: string;
 }) {
+  const example = componentExamples[path];
+
   return (
     <Card>
       <CardHeader>
@@ -110,13 +350,18 @@ function ComponentCard({
         <CardDescription>{category}</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="border rounded-md p-4 flex items-center justify-center min-h-[120px] mb-4">
+          {example || (
+            <div className="text-muted-foreground">No preview available</div>
+          )}
+        </div>
         <p className="text-sm text-muted-foreground">
           {`UI component for ${name.toLowerCase()} interactions.`}
         </p>
       </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full" asChild>
-          <Link href={`/components/${path}`}>View Component</Link>
+          <Link href={`/components/${path}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>

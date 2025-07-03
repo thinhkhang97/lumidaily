@@ -43,73 +43,84 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Color Palette */
 :root {
+  /* Lumi Color Palette */
+  --lumi-white: #fff;
+  --lumi-parchment-cream: #f8e9d4;
+  --lumi-lavender: #d8bfd8;
+  --lumi-soft-amber: #e89a4f;
+  --lumi-sage-green: #b8d1b8;
+  --lumi-dusty-rose: #d89797;
+  --lumi-deep-slate: #6a6a6a;
+
+  /* Base Theme Variables */
   --radius: 0.625rem;
-  --background: oklch(1 0 0); /* Original background */
-  --foreground: oklch(0.145 0 0); /* Original foreground */
-  --card: #f9f9f9; /* Very subtle light gray for minimal distinction */
-  --card-foreground: #6a6a6a; /* Deep Slate for better readability */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #e89a4f; /* Soft Amber as primary */
-  --primary-foreground: #fff; /* White */
-  --secondary: #d8bfd8; /* Lumi Lavender as secondary */
-  --secondary-foreground: #6a6a6a; /* Deep Slate */
-  --muted: oklch(0.97 0 0); /* Original muted */
-  --muted-foreground: oklch(0.556 0 0); /* Original muted foreground */
-  --accent: #b8d1b8; /* Sage Green */
-  --accent-foreground: #6a6a6a; /* Deep Slate */
-  --destructive: #d89797; /* Dusty Rose */
-  --border: transparent; /* Transparent border for borderless design */
-  --input: #f5f5f5; /* Very light gray for subtle input fields */
-  --ring: #e89a4f; /* Soft Amber */
-  --chart-1: #e89a4f; /* Soft Amber */
-  --chart-2: #d8bfd8; /* Lumi Lavender */
-  --chart-3: #b8d1b8; /* Sage Green */
-  --chart-4: #d89797; /* Dusty Rose */
-  --chart-5: #6a6a6a; /* Deep Slate */
-  --sidebar: oklch(0.985 0 0); /* Original sidebar */
-  --sidebar-foreground: oklch(0.145 0 0); /* Original sidebar foreground */
-  --sidebar-primary: #e89a4f; /* Soft Amber */
-  --sidebar-primary-foreground: #fff; /* White */
-  --sidebar-accent: #d8bfd8; /* Lumi Lavender */
-  --sidebar-accent-foreground: #6a6a6a; /* Deep Slate */
-  --sidebar-border: transparent; /* Transparent border for borderless design */
-  --sidebar-ring: #e89a4f; /* Soft Amber */
+  --background: var(--lumi-white);
+  --foreground: var(--lumi-deep-slate);
+  --card: #f9f9f9;
+  --card-foreground: var(--lumi-deep-slate);
+  --popover: var(--lumi-white);
+  --popover-foreground: var(--lumi-deep-slate);
+  --primary: var(--lumi-soft-amber);
+  --primary-foreground: var(--lumi-white);
+  --secondary: var(--lumi-lavender);
+  --secondary-foreground: var(--lumi-deep-slate);
+  --muted: #f5f5f5;
+  --muted-foreground: #888888;
+  --accent: var(--lumi-sage-green);
+  --accent-foreground: var(--lumi-deep-slate);
+  --destructive: var(--lumi-dusty-rose);
+  --border: #e5e5e5;
+  --input: #f5f5f5;
+  --ring: var(--lumi-soft-amber);
+  --chart-1: var(--lumi-soft-amber);
+  --chart-2: var(--lumi-lavender);
+  --chart-3: var(--lumi-sage-green);
+  --chart-4: var(--lumi-dusty-rose);
+  --chart-5: var(--lumi-deep-slate);
+  --sidebar: #f9f9f9;
+  --sidebar-foreground: var(--lumi-deep-slate);
+  --sidebar-primary: var(--lumi-soft-amber);
+  --sidebar-primary-foreground: var(--lumi-white);
+  --sidebar-accent: var(--lumi-lavender);
+  --sidebar-accent-foreground: var(--lumi-deep-slate);
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: var(--lumi-soft-amber);
 }
 
 .dark {
-  --background: oklch(0.145 0 0); /* Original dark background */
-  --foreground: oklch(0.985 0 0); /* Original dark foreground */
-  --card: #1e1e1e; /* Slightly lighter than background for subtle distinction */
-  --card-foreground: #ffffff; /* White text for readability */
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #e89a4f; /* Soft Amber as primary */
-  --primary-foreground: #fff; /* White */
-  --secondary: #d8bfd8; /* Lumi Lavender as secondary */
-  --secondary-foreground: #fff; /* White */
-  --muted: oklch(0.269 0 0); /* Original dark muted */
-  --muted-foreground: oklch(0.708 0 0); /* Original dark muted foreground */
-  --accent: #b8d1b8; /* Sage Green */
-  --accent-foreground: #fff; /* White */
-  --destructive: #d89797; /* Dusty Rose */
-  --border: transparent; /* Transparent border for borderless design */
-  --input: rgba(255, 255, 255, 0.05); /* Very subtle white for input fields */
-  --ring: #e89a4f; /* Soft Amber */
-  --chart-1: #e89a4f; /* Soft Amber */
-  --chart-2: #d8bfd8; /* Lumi Lavender */
-  --chart-3: #b8d1b8; /* Sage Green */
-  --chart-4: #d89797; /* Dusty Rose */
-  --chart-5: #f8e9d4; /* Parchment Cream */
-  --sidebar: oklch(0.205 0 0); /* Original dark sidebar */
-  --sidebar-foreground: oklch(0.985 0 0); /* Original dark sidebar foreground */
-  --sidebar-primary: #e89a4f; /* Soft Amber */
-  --sidebar-primary-foreground: #fff; /* White */
-  --sidebar-accent: #d8bfd8; /* Lumi Lavender */
-  --sidebar-accent-foreground: #fff; /* White */
-  --sidebar-border: transparent; /* Transparent border for borderless design */
-  --sidebar-ring: #e89a4f; /* Soft Amber */
+  --background: #1e1e1e;
+  --foreground: var(--lumi-white);
+  --card: #2a2a2a;
+  --card-foreground: var(--lumi-white);
+  --popover: #2a2a2a;
+  --popover-foreground: var(--lumi-white);
+  --primary: var(--lumi-soft-amber);
+  --primary-foreground: var(--lumi-white);
+  --secondary: var(--lumi-lavender);
+  --secondary-foreground: var(--lumi-white);
+  --muted: #3a3a3a;
+  --muted-foreground: #aaaaaa;
+  --accent: var(--lumi-sage-green);
+  --accent-foreground: var(--lumi-white);
+  --destructive: var(--lumi-dusty-rose);
+  --border: #3a3a3a;
+  --input: rgba(255, 255, 255, 0.05);
+  --ring: var(--lumi-soft-amber);
+  --chart-1: var(--lumi-soft-amber);
+  --chart-2: var(--lumi-lavender);
+  --chart-3: var(--lumi-sage-green);
+  --chart-4: var(--lumi-dusty-rose);
+  --chart-5: var(--lumi-parchment-cream);
+  --sidebar: #2a2a2a;
+  --sidebar-foreground: var(--lumi-white);
+  --sidebar-primary: var(--lumi-soft-amber);
+  --sidebar-primary-foreground: var(--lumi-white);
+  --sidebar-accent: var(--lumi-lavender);
+  --sidebar-accent-foreground: var(--lumi-white);
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: var(--lumi-soft-amber);
 }
 
 @layer base {

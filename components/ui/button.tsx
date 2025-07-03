@@ -9,12 +9,30 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Primary button - Soft Amber
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
+
+        // Destructive button - Dusty Rose
         destructive: "bg-destructive text-white hover:bg-destructive/90",
-        outline: "bg-background hover:bg-accent hover:text-accent-foreground",
+
+        // Outline button - Border with Soft Amber hover
+        outline:
+          "border border-input bg-background hover:bg-primary/10 hover:text-primary",
+
+        // Secondary button - Lumi Lavender
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+
+        // Sage button - Sage Green
+        sage: "bg-[#B8D1B8] text-[#6A6A6A] hover:bg-[#B8D1B8]/80",
+
+        // Cream button - Parchment Cream
+        cream: "bg-[#F8E9D4] text-[#6A6A6A] hover:bg-[#F8E9D4]/80",
+
+        // Ghost button - Transparent with hover effect
+        ghost: "hover:bg-muted hover:text-foreground",
+
+        // Link button - Text only with underline on hover
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

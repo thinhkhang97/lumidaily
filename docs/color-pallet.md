@@ -4,10 +4,10 @@ White
 Parchment Cream
 #F8E9D4
 
-Lumi Lavender
+Lumi Lavender (secondary color)
 #D8BFD8
 
-Soft Amber
+Soft Amber (primary color)
 #E89A4F
 
 Sage Green
