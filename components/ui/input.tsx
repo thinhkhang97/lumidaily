@@ -8,15 +8,36 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       type={type}
       data-slot="input"
       className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground",
-        "bg-transparent border-0 border-b-2 border-foreground/20 rounded-none",
-        "flex h-10 w-full min-w-0 px-1 py-2 text-base",
-        "transition-all duration-200 ease-out outline-none soft-focus",
-        "focus:border-primary focus:bg-background/30",
-        "hover:border-foreground/40",
-        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
+        // Text and placeholder styling - using original text colors
+        "text-foreground placeholder:text-muted-foreground",
+        "selection:bg-[#D8BFD8] selection:text-foreground",
+
+        // Paper-inspired styling - only bottom border
+        "bg-transparent border-0 border-b-2 border-[#6A6A6A]/40 rounded-none",
+        "font-['Patrick_Hand',_cursive]",
+
+        // Dimensions and spacing
+        "flex h-10 w-full min-w-0 px-2 py-2 text-base",
+
+        // Animations and transitions
+        "transition-all duration-200 ease-out outline-none",
+
+        // Focus state - only highlight bottom border
+        "focus:border-b-2 focus:border-[#E89A4F]",
+
+        // Hover state
+        "hover:border-[#6A6A6A]/60",
+
+        // File input styling
+        "file:inline-flex file:h-8 file:border-0 file:bg-transparent",
+        "file:text-sm file:font-['Patrick_Hand',_cursive] file:text-foreground",
+
+        // Disabled state
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:border-muted-foreground/20",
+
+        // Responsive text size
         "md:text-sm",
+
         className
       )}
       {...props}
