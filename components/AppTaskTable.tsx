@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Edit, Trash2, Plus } from "lucide-react";
+import { Edit, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -31,33 +31,31 @@ export function AppTaskTable({
 }: AppTaskTableProps) {
   return (
     <Card className="lg:col-span-2">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Tasks</CardTitle>
+        {onAddTask && (
+          <Button onClick={onAddTask} size="sm">
+            <Plus className="mr-1 size-4" />
+            Add Task
+          </Button>
+        )}
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border/30">
-                <th className="pb-2 text-left">Status</th>
-                <th className="pb-2 text-left">Task</th>
-                <th className="pb-2 text-left">Priority</th>
-                <th className="pb-2 text-left">Pomodoros</th>
-                <th className="pb-2 text-left">Actions</th>
+                <th className="pb-2 text-left w-[30%]">Task</th>
+                <th className="pb-2 text-left w-[50%]">Pomodoros</th>
+                <th className="pb-2 text-left w-[20%]">Actions</th>
               </tr>
             </thead>
             <tbody>
               {tasks.map((task) => (
-                <tr key={task.id} className="border-b border-border/10">
-                  <td className="py-3">
-                    <Button
-                      variant={task.completed ? "success" : "ghost"}
-                      size="sm"
-                      className="rounded-full p-1"
-                    >
-                      {task.completed && <Check className="size-4" />}
-                    </Button>
-                  </td>
+                <tr
+                  key={task.id}
+                  className="border-b border-border/10 hover:bg-muted/30 transition-colors"
+                >
                   <td className="py-3">
                     <span
                       className={
@@ -68,17 +66,6 @@ export function AppTaskTable({
                     >
                       {task.name}
                     </span>
-                  </td>
-                  <td className="py-3">
-                    <div
-                      className={`inline-block h-3 w-3 rounded-full ${
-                        task.priority === "high"
-                          ? "bg-destructive"
-                          : task.priority === "medium"
-                          ? "bg-primary"
-                          : "bg-accent"
-                      }`}
-                    />
                   </td>
                   <td className="py-3">
                     <div className="flex items-center gap-1">
@@ -131,14 +118,6 @@ export function AppTaskTable({
             </tbody>
           </table>
         </div>
-        {onAddTask && (
-          <div className="mt-4 flex justify-end">
-            <Button onClick={onAddTask}>
-              <Plus className="mr-1 size-4" />
-              Add Task
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
