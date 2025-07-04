@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Calendar, ChevronDown, Settings, User } from "lucide-react";
+import { ChevronDown, Settings, User } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -55,6 +55,7 @@ import { TaskTable } from "@/components/TaskTable";
 import { TaskList } from "@/components/TaskList";
 import { Task } from "@/lib/types";
 import { CircleTimer } from "@/components/ui/circle-timer";
+import { CalendarDemo } from "@/components/CalendarDemo";
 
 const componentsByCategory = {
   "Form Elements": [
@@ -155,7 +156,7 @@ const componentExamples: Record<string, React.ReactNode> = {
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   ),
-  calendar: <Calendar className="h-6 w-6" />,
+  calendar: <CalendarDemo />,
   card: (
     <Card className="w-full max-w-sm">
       <CardHeader>
