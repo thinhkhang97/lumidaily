@@ -20,6 +20,7 @@ interface AppTaskTableProps {
   onAddTask?: () => void;
   onEditTask?: (taskId: string) => void;
   onDeleteTask?: (taskId: string) => void;
+  onUpdateSessionCount?: (taskId: string, completedSessions: number) => void;
 }
 
 export function AppTaskTable({
@@ -28,7 +29,26 @@ export function AppTaskTable({
   onAddTask,
   onEditTask,
   onDeleteTask,
+  onUpdateSessionCount,
 }: AppTaskTableProps) {
+  const handleSessionClick = (task: Task, sessionIndex: number) => {
+    if (!onUpdateSessionCount) return;
+
+    // Calculate new completed sessions count
+    let newCompletedSessions;
+
+    // If clicking on a session that's already completed or beyond
+    if (sessionIndex < task.completedSessions) {
+      // Set completed sessions to the clicked index + 1 (since indices are 0-based)
+      newCompletedSessions = sessionIndex + 1;
+    } else {
+      // Mark all sessions up to and including the clicked one as completed
+      newCompletedSessions = sessionIndex + 1;
+    }
+
+    onUpdateSessionCount(task.id, newCompletedSessions);
+  };
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -78,7 +98,15 @@ export function AppTaskTable({
                               i < task.completedSessions
                                 ? "bg-primary border-primary"
                                 : "border-border"
+                            } ${
+                              onUpdateSessionCount
+                                ? "cursor-pointer hover:border-primary hover:opacity-80"
+                                : ""
                             }`}
+                            onClick={() => handleSessionClick(task, i)}
+                            title={`Mark ${i + 1} session${
+                              i > 0 ? "s" : ""
+                            } as completed`}
                           />
                         ))}
                     </div>

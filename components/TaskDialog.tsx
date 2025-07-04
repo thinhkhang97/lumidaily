@@ -47,8 +47,15 @@ export function TaskDialog({
     setOpen(false);
   };
 
+  const onOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (!open) {
+      onCancel();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

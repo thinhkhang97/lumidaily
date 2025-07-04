@@ -6,6 +6,7 @@ import { QuoteCard } from "@/components/QuoteCard";
 import { AppTaskTable } from "@/components/AppTaskTable";
 import { AppCalendar } from "@/components/AppCalendar";
 import { PomodoroSession } from "@/components/PomodoroSession";
+import { TaskDialog } from "@/components/TaskDialog";
 
 // Mock data for tasks
 const mockTasks: Task[] = [
@@ -55,6 +56,8 @@ export default function AppPage() {
   const [activeSession, setActiveSession] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [showTaskDialog, setShowTaskDialog] = useState<boolean>(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const handleStartSession = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId);
@@ -96,13 +99,16 @@ export default function AppPage() {
   };
 
   const handleAddTask = () => {
-    // In a real app, this would open a dialog to add a new task
-    console.log("Add task clicked");
+    setEditingTask(null);
+    setShowTaskDialog(true);
   };
 
   const handleEditTask = (taskId: string) => {
-    // In a real app, this would open a dialog to edit the task
-    console.log("Edit task clicked", taskId);
+    const task = tasks.find((t) => t.id === taskId);
+    if (task) {
+      setEditingTask(task);
+      setShowTaskDialog(true);
+    }
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -111,9 +117,62 @@ export default function AppPage() {
     setTasks(updatedTasks);
   };
 
+  const handleUpdateSessionCount = (
+    taskId: string,
+    completedSessions: number
+  ) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        const isCompleted = completedSessions >= task.plannedSessions;
+        return {
+          ...task,
+          completedSessions,
+          completed: isCompleted,
+        };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
   const handleDateChange = (date: Date) => {
     console.log("Date selected:", date);
     // In a real app, this would filter tasks for the selected date
+  };
+
+  const handleSaveTask = (name: string, plannedSessions: number) => {
+    if (editingTask) {
+      // Update existing task
+      const updatedTasks = tasks.map((task) => {
+        if (task.id === editingTask.id) {
+          return {
+            ...task,
+            name,
+            plannedSessions,
+          };
+        }
+        return task;
+      });
+      setTasks(updatedTasks);
+    } else {
+      // Create new task
+      const newTask: Task = {
+        id: `task-${Date.now()}`,
+        name,
+        priority: "medium", // Default priority
+        plannedSessions,
+        completedSessions: 0,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
+    }
+    setShowTaskDialog(false);
+    setEditingTask(null);
+  };
+
+  const handleCancelTaskDialog = () => {
+    setShowTaskDialog(false);
+    setEditingTask(null);
   };
 
   return (
@@ -133,6 +192,7 @@ export default function AppPage() {
               onAddTask={handleAddTask}
               onEditTask={handleEditTask}
               onDeleteTask={handleDeleteTask}
+              onUpdateSessionCount={handleUpdateSessionCount}
             />
 
             {/* Calendar */}
@@ -145,6 +205,17 @@ export default function AppPage() {
             onPause={handlePauseSession}
             onSkip={handleSkipSession}
             onComplete={handleCompleteSession}
+          />
+        )}
+
+        {/* Task Dialog */}
+        {showTaskDialog && (
+          <TaskDialog
+            title={editingTask ? "Edit Task" : "Add New Task"}
+            initialName={editingTask?.name || ""}
+            initialSessions={editingTask?.plannedSessions || 1}
+            onSave={handleSaveTask}
+            onCancel={handleCancelTaskDialog}
           />
         )}
       </div>
