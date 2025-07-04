@@ -1,102 +1,203 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { CircleTimer } from "@/components/ui/circle-timer";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="inline-block bg-secondary/30 px-4 py-2 rounded-full border border-secondary/40">
+              <p className="text-sm font-accent">Mindful Productivity</p>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading">
+              Transform productivity into a{" "}
+              <span className="text-primary">mindful practice</span>
+            </h1>
+            <p className="text-xl">
+              Pomodaily combines the proven Pomodoro Technique with daily
+              reflection, beautiful handwritten aesthetics, and wellness-focused
+              design.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button size="lg">Get Started</Button>
+              <Button variant="outline" size="lg">
+                Learn More
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <div className="relative paper-texture paper-shadow rounded-xl p-8 border border-foreground/10">
+              <div className="absolute -top-4 -right-4 bg-secondary/30 p-2 rounded-full border border-secondary/40 soft-glow">
+                <span className="font-accent">Lumi</span>
+              </div>
+              <div className="flex flex-col items-center gap-6">
+                <CircleTimer
+                  duration={1500}
+                  currentTime={1200}
+                  size={180}
+                  strokeWidth={12}
+                >
+                  <div className="text-center">
+                    <span className="text-3xl font-medium">20:00</span>
+                    <p className="text-sm opacity-80">Focus Time</p>
+                  </div>
+                </CircleTimer>
+                <div className="w-full space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full bg-primary flex-shrink-0"></div>
+                    <p className="text-sm line-through opacity-70">
+                      Review PRD document
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
+                    <p className="text-sm">Design landing page wireframe</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
+                    <p className="text-sm">Implement responsive layout</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Features Section */}
+      <section className="bg-secondary/10 py-16 md:py-24 border-y border-secondary/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading mb-4">
+              Features that promote mindfulness
+            </h2>
+            <p className="text-xl max-w-2xl mx-auto">
+              A thoughtfully designed, paper-inspired digital experience that
+              feels personal, calming, and sustainable.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-primary rounded-full"></div>
+              </div>
+              <h3 className="text-xl font-heading mb-2">Pomodoro Timer</h3>
+              <p>
+                Customizable focus sessions with mindful breaks to maintain
+                productivity without burnout.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-secondary rounded-full"></div>
+              </div>
+              <h3 className="text-xl font-heading mb-2">Daily Task Planning</h3>
+              <p>
+                Organize your day with session-based tracking and visual
+                progress indicators.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-accent rounded-full"></div>
+              </div>
+              <h3 className="text-xl font-heading mb-2">Gratitude Journal</h3>
+              <p>
+                Integrate mindfulness into your routine with daily reflection
+                and gratitude practices.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Lumi Section */}
+      <section className="container mx-auto px-4 py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="order-2 md:order-1 flex justify-center">
+            <div className="relative paper-texture paper-shadow rounded-xl p-8 border border-foreground/10 max-w-md">
+              <div className="absolute -top-4 -left-4 bg-secondary/40 p-3 rounded-full border border-secondary/50 soft-glow">
+                <span className="font-accent">Hello!</span>
+              </div>
+              <div className="space-y-4 font-accent">
+                <p className="text-lg">
+                  &ldquo;I&rsquo;m Lumi, your paper sprite. Let&rsquo;s write
+                  today&rsquo;s story together!&rdquo;
+                </p>
+                <p>
+                  &ldquo;What brought you joy today? Let&rsquo;s add it to your
+                  gratitude journal.&rdquo;
+                </p>
+                <p>
+                  &ldquo;One more focus session, and you&rsquo;re closer to
+                  achieving your goals!&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 md:order-2 space-y-6">
+            <h2 className="text-3xl md:text-4xl font-heading">
+              Meet <span className="text-secondary">Lumi</span>, your mindful
+              companion
+            </h2>
+            <p className="text-xl">
+              A delicate paper sprite glowing with soft lavender light, Lumi
+              carries the magic of mindful productivity.
+            </p>
+            <p>
+              Lumi helps you craft each day like a page in a beautiful story,
+              weaving focus, rest, and reflection into moments that feel alive
+              and meaningful.
+            </p>
+            <Button variant="secondary" size="lg">
+              Learn about Lumi
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-primary/10 py-16 md:py-24 border-y border-primary/20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-heading mb-6">
+            Ready to transform your productivity?
+          </h2>
+          <p className="text-xl max-w-2xl mx-auto mb-8">
+            Join thousands of mindful professionals, students, and wellness
+            enthusiasts who have found balance with Pomodaily.
+          </p>
+          <Button size="lg">Get Started Now</Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 md:py-12">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-heading text-xl">Pomodaily</span>
+            <span className="text-sm opacity-70">© 2025</span>
+          </div>
+          <div className="flex gap-6">
+            <Link href="#" className="hover:text-primary transition-colors">
+              Privacy
+            </Link>
+            <Link href="#" className="hover:text-primary transition-colors">
+              Terms
+            </Link>
+            <Link href="#" className="hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
