@@ -22,10 +22,12 @@ export default function Home() {
               design.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg">Get Started</Button>
-              <Button variant="outline" size="lg">
+              <Link href="/app">
+                <Button size="lg">Get Started</Button>
+              </Link>
+              {/* <Button variant="outline" size="lg">
                 Learn More
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="flex justify-center">
@@ -175,7 +177,9 @@ export default function Home() {
             Join thousands of mindful professionals, students, and wellness
             enthusiasts who have found balance with Pomodaily.
           </p>
-          <Button size="lg">Get Started Now</Button>
+          <Link href="/app">
+            <Button size="lg">Get Started Now</Button>
+          </Link>
         </div>
       </section>
 
