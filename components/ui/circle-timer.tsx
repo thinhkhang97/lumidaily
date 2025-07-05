@@ -41,7 +41,7 @@ export function CircleTimer({
   const strokeDashoffset = circumference * (1 - progress);
 
   React.useEffect(() => {
-    if (currentTime <= 0 && onComplete) {
+    if (currentTime === 0 && onComplete) {
       onComplete();
     }
   }, [currentTime, onComplete]);

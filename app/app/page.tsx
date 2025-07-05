@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Task } from "@/lib/types";
 import { QuoteCard } from "@/components/QuoteCard";
 import { AppTaskTable } from "@/components/AppTaskTable";
@@ -54,49 +54,44 @@ const mockTasks: Task[] = [
 
 export default function AppPage() {
   const [activeSession, setActiveSession] = useState<boolean>(false);
-  const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [showTaskDialog, setShowTaskDialog] = useState<boolean>(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const currentTaskId = useRef<string | null>(null);
 
   const handleStartSession = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId);
     if (task) {
-      setCurrentTask(task);
+      currentTaskId.current = task.id;
       setActiveSession(true);
     }
   };
 
-  const handlePauseSession = () => {
-    // In a real app, this would pause the timer
-    setActiveSession(false);
-  };
+  // Use useCallback to prevent recreation of this function on every render
+  const handleCompleteSession = useCallback(() => {
+    if (currentTaskId) {
+      setTasks((prevTasks) => {
+        const currentTask = prevTasks.find(
+          (t) => t.id === currentTaskId.current
+        );
+        if (!currentTask) return prevTasks;
 
-  const handleSkipSession = () => {
-    setActiveSession(false);
-    setCurrentTask(null);
-  };
+        const newCompletedSessions = currentTask.completedSessions + 1;
+        const updatedTask = {
+          ...currentTask,
+          completedSessions: newCompletedSessions,
+          completed: newCompletedSessions >= currentTask.plannedSessions,
+        };
 
-  const handleCompleteSession = () => {
-    // In a real app, this would mark the session as completed
-    if (currentTask) {
-      const updatedTasks = tasks.map((task) => {
-        if (task.id === currentTask.id) {
-          const newCompletedSessions = task.completedSessions + 1;
-          return {
-            ...task,
-            completedSessions: newCompletedSessions,
-            completed: newCompletedSessions >= task.plannedSessions,
-          };
-        }
-        return task;
+        // Update the tasks list
+        const updatedTasks = prevTasks.map((task) =>
+          task.id === currentTaskId.current ? updatedTask : task
+        );
+
+        return updatedTasks;
       });
-
-      setTasks(updatedTasks);
-      setActiveSession(false);
-      setCurrentTask(null);
     }
-  };
+  }, []);
 
   const handleAddTask = () => {
     setEditingTask(null);
@@ -175,6 +170,11 @@ export default function AppPage() {
     setEditingTask(null);
   };
 
+  const handleCancelSession = () => {
+    setActiveSession(false);
+    currentTaskId.current = null;
+  };
+
   return (
     <div className="min-h-screen">
       {/* Main Content */}
@@ -201,10 +201,9 @@ export default function AppPage() {
         ) : (
           /* Pomodoro Session */
           <PomodoroSession
-            task={currentTask}
-            onPause={handlePauseSession}
-            onSkip={handleSkipSession}
+            task={tasks.find((t) => t.id === currentTaskId.current) || null}
             onComplete={handleCompleteSession}
+            onCancel={handleCancelSession}
           />
         )}
 
