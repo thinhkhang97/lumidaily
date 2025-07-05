@@ -328,47 +328,49 @@ export function PomodoroSession({
       )}
 
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-semibold mb-4">{getSessionTitle()}</h2>
-        <CircleTimer
-          duration={getSessionDuration()}
-          currentTime={currentTime}
-          size={isFullScreen ? 320 : 240}
-          strokeWidth={isFullScreen ? 16 : 12}
-          isRunning={
-            isRunning &&
-            (sessionState === SessionState.WORK ||
-              sessionState === SessionState.BREAK)
-          }
-          className="mx-auto"
-        >
-          <div className="flex flex-col items-center">
-            <span
-              className={`font-heading ${
-                isFullScreen ? "text-6xl" : "text-4xl"
-              }`}
-            >
-              {Math.floor(currentTime / 60)}:
-              {(currentTime % 60).toString().padStart(2, "0")}
-            </span>
-            {task && (
-              <span className={`mt-2 ${isFullScreen ? "text-xl" : "text-lg"}`}>
-                {task.name}
-              </span>
-            )}
-            {sessionState === SessionState.BREAK && (
-              <span className="mt-1 text-sm text-muted-foreground">
-                Take a break!
-              </span>
-            )}
-            {!isRunning &&
+        <h2 className="text-2xl font-semibold">{getSessionTitle()}</h2>
+        {task && (
+          <span className={`${isFullScreen ? "text-xl" : "text-lg"}`}>
+            {task.name}
+          </span>
+        )}
+        <div className="mt-4">
+          <CircleTimer
+            duration={getSessionDuration()}
+            currentTime={currentTime}
+            size={isFullScreen ? 320 : 240}
+            strokeWidth={isFullScreen ? 16 : 12}
+            isRunning={
+              isRunning &&
               (sessionState === SessionState.WORK ||
-                sessionState === SessionState.BREAK) && (
-                <span className="mt-2 text-sm font-medium text-yellow-500 dark:text-yellow-400">
-                  Paused
+                sessionState === SessionState.BREAK)
+            }
+            className="mx-auto"
+          >
+            <div className="flex flex-col items-center">
+              <span
+                className={`font-heading ${
+                  isFullScreen ? "text-6xl" : "text-4xl"
+                }`}
+              >
+                {Math.floor(currentTime / 60)}:
+                {(currentTime % 60).toString().padStart(2, "0")}
+              </span>
+              {sessionState === SessionState.BREAK && (
+                <span className="mt-1 text-sm text-muted-foreground">
+                  Take a break!
                 </span>
               )}
-          </div>
-        </CircleTimer>
+              {!isRunning &&
+                (sessionState === SessionState.WORK ||
+                  sessionState === SessionState.BREAK) && (
+                  <span className="mt-2 text-sm font-medium text-yellow-500 dark:text-yellow-400">
+                    Paused
+                  </span>
+                )}
+            </div>
+          </CircleTimer>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 items-center">
