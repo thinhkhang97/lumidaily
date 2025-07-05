@@ -353,6 +353,13 @@ export function PomodoroSession({
                 sessionState === SessionState.BREAK)
             }
             className="mx-auto"
+            progressColor={
+              sessionState === SessionState.WORK
+                ? "var(--primary)"
+                : sessionState === SessionState.BREAK
+                ? "var(--lumi-dusty-rose)"
+                : "var(--lumi-lavender)"
+            }
           >
             <div className="flex flex-col items-center">
               <span
@@ -369,8 +376,10 @@ export function PomodoroSession({
                 </span>
               )}
               {!isRunning &&
-                (sessionState === SessionState.WORK ||
-                  sessionState === SessionState.BREAK) && (
+                ((sessionState === SessionState.WORK &&
+                  currentTime !== initialTime) ||
+                  (sessionState === SessionState.BREAK &&
+                    currentTime !== breakTime)) && (
                   <span className="mt-2 text-sm font-medium text-yellow-500 dark:text-yellow-400">
                     Paused
                   </span>
