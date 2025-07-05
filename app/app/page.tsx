@@ -158,7 +158,7 @@ export default function AppPage() {
       {/* Main Content */}
       <div className="container mx-auto py-8">
         {/* Inspirational Quote */}
-        <QuoteCard className="mb-8" />
+        {!activeSession && <QuoteCard className="mb-8" />}
 
         {/* Two-Panel Layout */}
         {!activeSession ? (

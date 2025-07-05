@@ -3,7 +3,28 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { CircleTimer } from "@/components/ui/circle-timer";
-import { Check, Pause, Play, SkipForward, X } from "lucide-react";
+import {
+  Check,
+  Pause,
+  Play,
+  SkipForward,
+  X,
+  Maximize,
+  Minimize,
+} from "lucide-react";
+
+// Define vendor-prefixed fullscreen API interfaces
+interface FullScreenElement extends HTMLElement {
+  webkitRequestFullscreen?: () => Promise<void>;
+  msRequestFullscreen?: () => Promise<void>;
+}
+
+interface FullScreenDocument extends Document {
+  webkitFullscreenElement?: Element;
+  msFullscreenElement?: Element;
+  webkitExitFullscreen?: () => Promise<void>;
+  msExitFullscreen?: () => Promise<void>;
+}
 
 interface Task {
   id: string;
@@ -41,7 +62,9 @@ export function PomodoroSession({
   const [hasPlayedSound, setHasPlayedSound] = useState<{
     [key: number]: boolean;
   }>({});
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fullScreenContainerRef = useRef<HTMLDivElement>(null);
 
   // Calculate isFinalSession only once to avoid re-renders
   const isFinalSession = useMemo(() => {
@@ -63,6 +86,20 @@ export function PomodoroSession({
       }
     };
   }, []);
+
+  // Handle ESC key press to exit full-screen mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullScreen) {
+        exitFullScreen();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFullScreen]);
 
   // Main timer logic
   useEffect(() => {
@@ -117,6 +154,9 @@ export function PomodoroSession({
   };
 
   const handleCancel = () => {
+    if (isFullScreen) {
+      exitFullScreen();
+    }
     if (onCancel) onCancel();
   };
 
@@ -127,7 +167,50 @@ export function PomodoroSession({
   };
 
   const handleCompleteTask = () => {
+    if (isFullScreen) {
+      exitFullScreen();
+    }
     onCancel?.();
+  };
+
+  const toggleFullScreen = () => {
+    if (!isFullScreen) {
+      enterFullScreen();
+    } else {
+      exitFullScreen();
+    }
+  };
+
+  const enterFullScreen = () => {
+    const element = fullScreenContainerRef.current as FullScreenElement | null;
+    if (element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+      setIsFullScreen(true);
+    }
+  };
+
+  const exitFullScreen = () => {
+    const doc = document as FullScreenDocument;
+    if (
+      doc.fullscreenElement ||
+      doc.webkitFullscreenElement ||
+      doc.msFullscreenElement
+    ) {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        doc.msExitFullscreen();
+      }
+    }
+    setIsFullScreen(false);
   };
 
   const getSessionTitle = () => {
@@ -227,14 +310,30 @@ export function PomodoroSession({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div
+      ref={fullScreenContainerRef}
+      className={`flex flex-col items-center justify-center ${
+        isFullScreen ? "fixed inset-0 bg-background z-50" : ""
+      }`}
+    >
+      {isFullScreen && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4"
+          onClick={exitFullScreen}
+        >
+          <X className="h-6 w-6" />
+        </Button>
+      )}
+
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-semibold mb-4">{getSessionTitle()}</h2>
         <CircleTimer
           duration={getSessionDuration()}
           currentTime={currentTime}
-          size={240}
-          strokeWidth={12}
+          size={isFullScreen ? 320 : 240}
+          strokeWidth={isFullScreen ? 16 : 12}
           isRunning={
             isRunning &&
             (sessionState === SessionState.WORK ||
@@ -243,11 +342,19 @@ export function PomodoroSession({
           className="mx-auto"
         >
           <div className="flex flex-col items-center">
-            <span className="font-heading text-4xl">
+            <span
+              className={`font-heading ${
+                isFullScreen ? "text-6xl" : "text-4xl"
+              }`}
+            >
               {Math.floor(currentTime / 60)}:
               {(currentTime % 60).toString().padStart(2, "0")}
             </span>
-            {task && <span className="mt-2 text-lg">{task.name}</span>}
+            {task && (
+              <span className={`mt-2 ${isFullScreen ? "text-xl" : "text-lg"}`}>
+                {task.name}
+              </span>
+            )}
             {sessionState === SessionState.BREAK && (
               <span className="mt-1 text-sm text-muted-foreground">
                 Take a break!
@@ -263,7 +370,29 @@ export function PomodoroSession({
           </div>
         </CircleTimer>
       </div>
-      {renderButtons()}
+
+      <div className="flex flex-col gap-4 items-center">
+        {renderButtons()}
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleFullScreen}
+          className="mt-4"
+        >
+          {isFullScreen ? (
+            <>
+              <Minimize className="mr-2 h-4 w-4" />
+              Exit Full Screen
+            </>
+          ) : (
+            <>
+              <Maximize className="mr-2 h-4 w-4" />
+              Enter Full Screen
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
