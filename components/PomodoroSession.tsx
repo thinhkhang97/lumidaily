@@ -37,6 +37,7 @@ interface PomodoroSessionProps {
   task: Task | null;
   initialTime?: number;
   breakTime?: number;
+  volume?: number;
   onComplete?: () => void;
   onCancel?: () => void;
 }
@@ -51,6 +52,7 @@ export function PomodoroSession({
   task,
   initialTime = 10, // 25 minutes in seconds
   breakTime = 5,
+  volume = 50,
   onComplete,
   onCancel,
 }: PomodoroSessionProps) {
@@ -79,13 +81,18 @@ export function PomodoroSession({
     );
     audioRef.current.preload = "auto";
 
+    // Set volume from props (0-100 scale to 0-1)
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
     };
-  }, []);
+  }, [volume]);
 
   // Handle ESC key press to exit full-screen mode
   useEffect(() => {

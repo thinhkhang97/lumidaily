@@ -10,12 +10,11 @@ import { TaskDialog } from "@/components/TaskDialog";
 import { useTasks } from "@/lib/hooks/useTasks";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { formatDateString } from "@/lib/services/TaskService";
-
-const POMODORO_TIME = 60 * 25;
-const BREAK_TIME = 60 * 5;
+import { useConfig } from "@/lib/hooks/useConfig";
 
 export default function AppPage() {
   const { authState } = useAuth();
+  const { config } = useConfig();
   const {
     tasks,
     allTasks,
@@ -36,6 +35,10 @@ export default function AppPage() {
   const [showTaskDialog, setShowTaskDialog] = useState<boolean>(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const currentTaskId = useRef<string | null>(null);
+
+  // Calculate pomodoro and break times in seconds
+  const pomodoroTime = config.pomodoroMinutes * 60;
+  const breakTime = config.breakMinutes * 60;
 
   const handleStartSession = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId);
@@ -187,8 +190,9 @@ export default function AppPage() {
         ) : (
           /* Pomodoro Session */
           <PomodoroSession
-            initialTime={POMODORO_TIME}
-            breakTime={BREAK_TIME}
+            initialTime={pomodoroTime}
+            breakTime={breakTime}
+            volume={config.volume}
             task={tasks.find((t) => t.id === currentTaskId.current) || null}
             onComplete={handleCompleteSession}
             onCancel={handleCancelSession}

@@ -12,3 +12,9 @@ export interface Quote {
   text: string;
   author?: string;
 }
+
+export interface PomodoroConfig {
+  pomodoroMinutes: number;
+  breakMinutes: number;
+  volume: number; // 0-100
+}

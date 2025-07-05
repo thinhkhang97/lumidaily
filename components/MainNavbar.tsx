@@ -6,10 +6,12 @@ import { Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ConfigDialog } from "@/components/ConfigDialog";
 
 export function MainNavbar() {
   const pathname = usePathname();
   const [isLandingPage, setIsLandingPage] = useState(false);
+  const [configDialogOpen, setConfigDialogOpen] = useState(false);
 
   // Determine if we're in the app section
   useEffect(() => {
@@ -66,11 +68,14 @@ export function MainNavbar() {
           {/* Only show these buttons in app pages */}
           {!isLandingPage && (
             <>
-              <Link href="/#">
-                <Button variant="ghost" size="icon" aria-label="Settings">
-                  <Settings className="size-5" />
-                </Button>
-              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Settings"
+                onClick={() => setConfigDialogOpen(true)}
+              >
+                <Settings className="size-5" />
+              </Button>
               {/* <Button variant="ghost" size="icon" aria-label="User profile">
                 <User className="size-5" />
               </Button> */}
@@ -81,6 +86,12 @@ export function MainNavbar() {
           <ThemeSwitcher />
         </div>
       </div>
+
+      {/* Configuration Dialog */}
+      <ConfigDialog
+        open={configDialogOpen}
+        onOpenChange={setConfigDialogOpen}
+      />
     </header>
   );
 }
