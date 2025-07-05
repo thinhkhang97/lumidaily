@@ -11,6 +11,9 @@ import { useTasks } from "@/lib/hooks/useTasks";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { formatDateString } from "@/lib/services/TaskService";
 
+const POMODORO_TIME = 60 * 25;
+const BREAK_TIME = 60 * 5;
+
 export default function AppPage() {
   const { authState } = useAuth();
   const {
@@ -184,6 +187,8 @@ export default function AppPage() {
         ) : (
           /* Pomodoro Session */
           <PomodoroSession
+            initialTime={POMODORO_TIME}
+            breakTime={BREAK_TIME}
             task={tasks.find((t) => t.id === currentTaskId.current) || null}
             onComplete={handleCompleteSession}
             onCancel={handleCancelSession}
