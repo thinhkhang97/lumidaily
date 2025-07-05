@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,12 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 
 interface TaskDialogProps {
   title: string;
   initialName?: string;
   initialSessions?: number;
-  onSave: (name: string, plannedSessions: number) => void;
+  initialDate?: Date;
+  onSave: (name: string, plannedSessions: number, date: Date) => void;
   onCancel: () => void;
 }
 
@@ -28,16 +29,19 @@ export function TaskDialog({
   title,
   initialName = "",
   initialSessions = 1,
+  initialDate = new Date(),
   onSave,
   onCancel,
 }: TaskDialogProps) {
   const [name, setName] = useState(initialName);
   const [plannedSessions, setPlannedSessions] = useState(initialSessions);
+  // const [date, setDate] = useState<Date>(initialDate);
   const [open, setOpen] = useState(true);
+  // const [calendarOpen, setCalendarOpen] = useState(false);
 
   const handleSave = () => {
     if (name.trim()) {
-      onSave(name, plannedSessions);
+      onSave(name, plannedSessions, initialDate);
       setOpen(false);
     }
   };
@@ -90,6 +94,35 @@ export function TaskDialog({
               </SelectContent>
             </Select>
           </div>
+
+          {/* <div className="space-y-2">
+            <Label htmlFor="date">Task Date</Label>
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(date, "PPP")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(newDate) => {
+                    if (newDate) {
+                      setDate(newDate);
+                      setCalendarOpen(false);
+                    }
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div> */}
         </div>
         <div className="flex justify-end gap-3 mt-2">
           <Button variant="secondary" onClick={handleCancel}>

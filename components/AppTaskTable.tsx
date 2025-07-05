@@ -94,7 +94,7 @@ export function AppTaskTable({
                         .map((_, i) => (
                           <div
                             key={i}
-                            className={`h-4 w-4 rounded-full border ${
+                            className={`h-6 w-6 rounded-full border ${
                               i < task.completedSessions
                                 ? "bg-primary border-primary"
                                 : "border-border"

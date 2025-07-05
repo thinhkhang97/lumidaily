@@ -3,6 +3,7 @@ import { Kalam, Patrick_Hand, Handlee } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/lib/components/ThemeProvider";
+import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { MainNavbar } from "@/components/MainNavbar";
 
 const kalam = Kalam({
@@ -39,11 +40,13 @@ export default function RootLayout({
       <body
         className={`${kalam.variable} ${patrickHand.variable} ${handlee.variable} antialiased`}
       >
-        <ThemeProvider>
-          <MainNavbar />
-          <main className="min-h-screen">{children}</main>
-          <Toaster />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <MainNavbar />
+            <main className="min-h-screen">{children}</main>
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

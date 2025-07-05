@@ -5,6 +5,7 @@ export interface Task {
   plannedSessions: number;
   completedSessions: number;
   completed: boolean;
+  date: string; // ISO format date string (YYYY-MM-DD)
 }
 
 export interface Quote {

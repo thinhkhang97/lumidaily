@@ -7,54 +7,29 @@ import { AppTaskTable } from "@/components/AppTaskTable";
 import { AppCalendar } from "@/components/AppCalendar";
 import { PomodoroSession } from "@/components/PomodoroSession";
 import { TaskDialog } from "@/components/TaskDialog";
-
-// Mock data for tasks
-const mockTasks: Task[] = [
-  {
-    id: "task-1",
-    name: "Complete project proposal",
-    priority: "high",
-    plannedSessions: 4,
-    completedSessions: 2,
-    completed: false,
-  },
-  {
-    id: "task-2",
-    name: "Review team feedback",
-    priority: "medium",
-    plannedSessions: 2,
-    completedSessions: 2,
-    completed: true,
-  },
-  {
-    id: "task-3",
-    name: "Prepare presentation slides",
-    priority: "high",
-    plannedSessions: 3,
-    completedSessions: 1,
-    completed: false,
-  },
-  {
-    id: "task-4",
-    name: "Research new techniques",
-    priority: "low",
-    plannedSessions: 2,
-    completedSessions: 0,
-    completed: false,
-  },
-  {
-    id: "task-5",
-    name: "Weekly team meeting",
-    priority: "medium",
-    plannedSessions: 1,
-    completedSessions: 0,
-    completed: false,
-  },
-];
+import { useTasks } from "@/lib/hooks/useTasks";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import { formatDateString } from "@/lib/services/TaskService";
 
 export default function AppPage() {
+  const { authState } = useAuth();
+  const {
+    tasks,
+    allTasks,
+    selectedDate,
+    isLoading,
+    error,
+    changeDate,
+    addTask: addTaskToStore,
+    updateTask: updateTaskInStore,
+    deleteTask: deleteTaskFromStore,
+    moveTaskToDate,
+  } = useTasks({
+    authState,
+    initialDate: new Date(), // Start with today's date
+  });
+
   const [activeSession, setActiveSession] = useState<boolean>(false);
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [showTaskDialog, setShowTaskDialog] = useState<boolean>(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const currentTaskId = useRef<string | null>(null);
@@ -69,29 +44,19 @@ export default function AppPage() {
 
   // Use useCallback to prevent recreation of this function on every render
   const handleCompleteSession = useCallback(() => {
-    if (currentTaskId) {
-      setTasks((prevTasks) => {
-        const currentTask = prevTasks.find(
-          (t) => t.id === currentTaskId.current
-        );
-        if (!currentTask) return prevTasks;
+    if (currentTaskId.current) {
+      const currentTask = tasks.find((t) => t.id === currentTaskId.current);
+      if (!currentTask) return;
 
-        const newCompletedSessions = currentTask.completedSessions + 1;
-        const updatedTask = {
-          ...currentTask,
-          completedSessions: newCompletedSessions,
-          completed: newCompletedSessions >= currentTask.plannedSessions,
-        };
+      const newCompletedSessions = currentTask.completedSessions + 1;
+      const isCompleted = newCompletedSessions >= currentTask.plannedSessions;
 
-        // Update the tasks list
-        const updatedTasks = prevTasks.map((task) =>
-          task.id === currentTaskId.current ? updatedTask : task
-        );
-
-        return updatedTasks;
+      updateTaskInStore(currentTaskId.current, {
+        completedSessions: newCompletedSessions,
+        completed: isCompleted,
       });
     }
-  }, []);
+  }, [tasks, updateTaskInStore]);
 
   const handleAddTask = () => {
     setEditingTask(null);
@@ -107,59 +72,57 @@ export default function AppPage() {
   };
 
   const handleDeleteTask = (taskId: string) => {
-    // In a real app, this would show a confirmation dialog
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(updatedTasks);
+    deleteTaskFromStore(taskId);
   };
 
   const handleUpdateSessionCount = (
     taskId: string,
     completedSessions: number
   ) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        const isCompleted = completedSessions >= task.plannedSessions;
-        return {
-          ...task,
-          completedSessions,
-          completed: isCompleted,
-        };
-      }
-      return task;
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const isCompleted = completedSessions >= task.plannedSessions;
+    updateTaskInStore(taskId, {
+      completedSessions,
+      completed: isCompleted,
     });
-    setTasks(updatedTasks);
   };
 
   const handleDateChange = (date: Date) => {
-    console.log("Date selected:", date);
-    // In a real app, this would filter tasks for the selected date
+    changeDate(date);
   };
 
-  const handleSaveTask = (name: string, plannedSessions: number) => {
+  const handleSaveTask = (
+    name: string,
+    plannedSessions: number,
+    date: Date
+  ) => {
     if (editingTask) {
       // Update existing task
-      const updatedTasks = tasks.map((task) => {
-        if (task.id === editingTask.id) {
-          return {
-            ...task,
-            name,
-            plannedSessions,
-          };
-        }
-        return task;
-      });
-      setTasks(updatedTasks);
-    } else {
-      // Create new task
-      const newTask: Task = {
-        id: `task-${Date.now()}`,
+      updateTaskInStore(editingTask.id, {
         name,
-        priority: "medium", // Default priority
         plannedSessions,
-        completedSessions: 0,
-        completed: false,
-      };
-      setTasks([...tasks, newTask]);
+      });
+
+      // If the date has changed, move the task to the new date
+      const taskDateString = editingTask.date;
+      const newDateString = formatDateString(date);
+      if (taskDateString !== newDateString) {
+        moveTaskToDate(editingTask.id, date);
+      }
+    } else {
+      // Create new task with the selected date
+      addTaskToStore(
+        {
+          name,
+          priority: "medium", // Default priority
+          plannedSessions,
+          completedSessions: 0,
+          completed: false,
+        },
+        date
+      );
     }
     setShowTaskDialog(false);
     setEditingTask(null);
@@ -174,6 +137,18 @@ export default function AppPage() {
     setActiveSession(false);
     currentTaskId.current = null;
   };
+
+  if (isLoading) {
+    return <div className="container mx-auto py-8">Loading tasks...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-8">
+        Error loading tasks: {error.message}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -199,7 +174,11 @@ export default function AppPage() {
 
             {/* Calendar - Takes 1 column (25% width) */}
             <div className="lg:col-span-1">
-              <AppCalendar tasks={tasks} onDateChange={handleDateChange} />
+              <AppCalendar
+                tasks={allTasks}
+                selectedDate={selectedDate}
+                onDateChange={handleDateChange}
+              />
             </div>
           </div>
         ) : (
@@ -217,6 +196,11 @@ export default function AppPage() {
             title={editingTask ? "Edit Task" : "Add New Task"}
             initialName={editingTask?.name || ""}
             initialSessions={editingTask?.plannedSessions || 1}
+            initialDate={
+              editingTask
+                ? new Date(editingTask.date + "T00:00:00")
+                : selectedDate
+            }
             onSave={handleSaveTask}
             onCancel={handleCancelTaskDialog}
           />
