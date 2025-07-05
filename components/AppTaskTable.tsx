@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit, Trash2, Plus } from "lucide-react";
+import { Edit, Trash2, Plus, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -61,91 +61,101 @@ export function AppTaskTable({
         )}
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border/30">
-                <th className="pb-2 text-left w-[30%]">Task</th>
-                <th className="pb-2 text-left w-[50%]">Pomodoros</th>
-                <th className="pb-2 text-left w-[20%]">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr
-                  key={task.id}
-                  className="border-b border-border/10 hover:bg-muted/30 transition-colors"
-                >
-                  <td className="py-3">
-                    <span
-                      className={
-                        task.completed
-                          ? "line-through text-muted-foreground"
-                          : ""
-                      }
-                    >
-                      {task.name}
-                    </span>
-                  </td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-1">
-                      {Array(task.plannedSessions)
-                        .fill(0)
-                        .map((_, i) => (
-                          <div
-                            key={i}
-                            className={`h-6 w-6 rounded-full border ${
-                              i < task.completedSessions
-                                ? "bg-primary border-primary"
-                                : "border-border"
-                            } ${
-                              onUpdateSessionCount
-                                ? "cursor-pointer hover:border-primary hover:opacity-80"
-                                : ""
-                            }`}
-                            onClick={() => handleSessionClick(task, i)}
-                            title={`Mark ${i + 1} session${
-                              i > 0 ? "s" : ""
-                            } as completed`}
-                          />
-                        ))}
-                    </div>
-                  </td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onStartSession(task.id)}
-                        disabled={task.completed}
-                      >
-                        Start
-                      </Button>
-                      {onEditTask && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onEditTask(task.id)}
-                        >
-                          <Edit className="size-4" />
-                        </Button>
-                      )}
-                      {onDeleteTask && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onDeleteTask(task.id)}
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </td>
+        {tasks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <ClipboardList className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium">No tasks yet</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Create your first task to get started
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border/30">
+                  <th className="pb-2 text-left w-[30%]">Task</th>
+                  <th className="pb-2 text-left w-[50%]">Pomodoros</th>
+                  <th className="pb-2 text-left w-[20%]">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr
+                    key={task.id}
+                    className="border-b border-border/10 hover:bg-muted/30 transition-colors"
+                  >
+                    <td className="py-3">
+                      <span
+                        className={
+                          task.completed
+                            ? "line-through text-muted-foreground"
+                            : ""
+                        }
+                      >
+                        {task.name}
+                      </span>
+                    </td>
+                    <td className="py-3">
+                      <div className="flex items-center gap-1">
+                        {Array(task.plannedSessions)
+                          .fill(0)
+                          .map((_, i) => (
+                            <div
+                              key={i}
+                              className={`h-6 w-6 rounded-full border ${
+                                i < task.completedSessions
+                                  ? "bg-primary border-primary"
+                                  : "border-border"
+                              } ${
+                                onUpdateSessionCount
+                                  ? "cursor-pointer hover:border-primary hover:opacity-80"
+                                  : ""
+                              }`}
+                              onClick={() => handleSessionClick(task, i)}
+                              title={`Mark ${i + 1} session${
+                                i > 0 ? "s" : ""
+                              } as completed`}
+                            />
+                          ))}
+                      </div>
+                    </td>
+                    <td className="py-3">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onStartSession(task.id)}
+                          disabled={task.completed}
+                        >
+                          Start
+                        </Button>
+                        {onEditTask && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onEditTask(task.id)}
+                          >
+                            <Edit className="size-4" />
+                          </Button>
+                        )}
+                        {onDeleteTask && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onDeleteTask(task.id)}
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
