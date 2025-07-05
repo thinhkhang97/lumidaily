@@ -49,7 +49,7 @@ export function AppCalendar({ tasks = [], onDateChange }: AppCalendarProps) {
           </h3>
           {displayTasks.length > 0 ? (
             <ul className="space-y-2">
-              {displayTasks.map((task) => (
+              {displayTasks.slice(0, 3).map((task) => (
                 <li key={task.id} className="flex items-center gap-2">
                   <div
                     className={`h-2 w-2 rounded-full ${

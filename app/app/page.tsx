@@ -184,19 +184,23 @@ export default function AppPage() {
 
         {/* Two-Panel Layout */}
         {!activeSession ? (
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Task Table */}
-            <AppTaskTable
-              tasks={tasks}
-              onStartSession={handleStartSession}
-              onAddTask={handleAddTask}
-              onEditTask={handleEditTask}
-              onDeleteTask={handleDeleteTask}
-              onUpdateSessionCount={handleUpdateSessionCount}
-            />
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+            {/* Task Table - Takes 3 columns (75% width) */}
+            <div className="lg:col-span-3">
+              <AppTaskTable
+                tasks={tasks}
+                onStartSession={handleStartSession}
+                onAddTask={handleAddTask}
+                onEditTask={handleEditTask}
+                onDeleteTask={handleDeleteTask}
+                onUpdateSessionCount={handleUpdateSessionCount}
+              />
+            </div>
 
-            {/* Calendar */}
-            <AppCalendar tasks={tasks} onDateChange={handleDateChange} />
+            {/* Calendar - Takes 1 column (25% width) */}
+            <div className="lg:col-span-1">
+              <AppCalendar tasks={tasks} onDateChange={handleDateChange} />
+            </div>
           </div>
         ) : (
           /* Pomodoro Session */
