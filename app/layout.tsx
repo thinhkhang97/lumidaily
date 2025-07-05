@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/lib/components/ThemeProvider";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { MainNavbar } from "@/components/MainNavbar";
+import { ThemeScript } from "@/lib/components/ThemeScript";
 
 const kalam = Kalam({
   variable: "--font-kalam",
@@ -37,6 +38,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body
         className={`${kalam.variable} ${patrickHand.variable} ${handlee.variable} antialiased`}
       >
