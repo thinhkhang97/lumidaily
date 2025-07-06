@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { TaskService } from "@/lib/services/TaskService";
 import { Task } from "@/lib/types";
-import { TaskService, formatDateString } from "@/lib/services/TaskService";
+import { isSameDay } from "date-fns";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseTasksOptions {
   // Will be used later when authentication is implemented
@@ -42,9 +43,8 @@ export function useTasks(options: UseTasksOptions = {}) {
         setAllTasks(loadedTasks);
 
         // Filter tasks for the selected date
-        const dateString = formatDateString(selectedDate);
-        const filteredTasks = loadedTasks.filter(
-          (task) => task.date === dateString
+        const filteredTasks = loadedTasks.filter((task) =>
+          isSameDay(new Date(task.date), selectedDate)
         );
         setTasks(filteredTasks);
 
@@ -58,9 +58,8 @@ export function useTasks(options: UseTasksOptions = {}) {
         setAllTasks(localTasks);
 
         // Filter tasks for the selected date
-        const dateString = formatDateString(selectedDate);
-        const filteredTasks = localTasks.filter(
-          (task) => task.date === dateString
+        const filteredTasks = localTasks.filter((task) =>
+          isSameDay(new Date(task.date), selectedDate)
         );
         setTasks(filteredTasks);
       } finally {
@@ -73,8 +72,9 @@ export function useTasks(options: UseTasksOptions = {}) {
 
   // Filter tasks when selected date changes
   useEffect(() => {
-    const dateString = formatDateString(selectedDate);
-    const filteredTasks = allTasks.filter((task) => task.date === dateString);
+    const filteredTasks = allTasks.filter((task) =>
+      isSameDay(new Date(task.date), selectedDate)
+    );
     setTasks(filteredTasks);
   }, [selectedDate, allTasks]);
 
@@ -108,11 +108,10 @@ export function useTasks(options: UseTasksOptions = {}) {
   const addTask = useCallback(
     (task: Omit<Task, "id" | "date">, date?: Date) => {
       const taskDate = date || selectedDate;
-      const dateString = formatDateString(taskDate);
       const newTask: Task = {
         ...task,
         id: `task-${Date.now()}`,
-        date: dateString,
+        date: taskDate.toISOString(),
       };
 
       setAllTasks((currentTasks) => [...currentTasks, newTask]);
@@ -142,7 +141,7 @@ export function useTasks(options: UseTasksOptions = {}) {
 
   // Move a task to a different date
   const moveTaskToDate = useCallback((taskId: string, newDate: Date) => {
-    const dateString = formatDateString(newDate);
+    const dateString = newDate.toISOString();
 
     setAllTasks((currentTasks) =>
       currentTasks.map((task) =>
