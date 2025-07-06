@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import { CalendarDemo } from "@/components/CalendarDemo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { ChevronDown, Settings, User } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+import { CircleTimer } from "@/components/ui/circle-timer";
 import {
   Dialog,
   DialogContent,
@@ -29,13 +22,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -43,19 +29,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Toaster } from "@/components/ui/sonner";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
+import { ChevronDown, Settings, User } from "lucide-react";
+import React from "react";
 import { toast } from "sonner";
-import { TaskTable } from "@/components/TaskTable";
-import { TaskList } from "@/components/TaskList";
-import { Task } from "@/lib/types";
-import { CircleTimer } from "@/components/ui/circle-timer";
-import { CalendarDemo } from "@/components/CalendarDemo";
 
 const componentsByCategory = {
   "Form Elements": [
@@ -90,28 +87,6 @@ const componentsByCategory = {
     { name: "Task List", path: "task-list" },
   ],
 };
-
-// Mock tasks for the TaskTable and TaskList examples
-const mockTasks: Task[] = [
-  {
-    id: "1",
-    name: "Complete project proposal",
-    plannedSessions: 3,
-    completedSessions: 2,
-  },
-  {
-    id: "2",
-    name: "Review documentation",
-    plannedSessions: 2,
-    completedSessions: 2,
-  },
-  {
-    id: "3",
-    name: "Prepare presentation",
-    plannedSessions: 4,
-    completedSessions: 1,
-  },
-];
 
 // Component examples for preview
 const componentExamples: Record<string, React.ReactNode> = {
@@ -316,30 +291,6 @@ const componentExamples: Record<string, React.ReactNode> = {
   ),
   "theme-provider": (
     <div className="p-2 border rounded-md">Theme Provider Example</div>
-  ),
-  "task-table": (
-    <div className="max-h-[300px] overflow-auto">
-      <TaskTable
-        tasks={mockTasks}
-        onEdit={() => {}}
-        onDelete={() => {}}
-        onToggleSession={() => {}}
-        onStartPomodoro={() => {}}
-      />
-    </div>
-  ),
-  "task-list": (
-    <div className="max-h-[400px] overflow-auto">
-      <TaskList
-        tasks={mockTasks}
-        onAddTask={() => {}}
-        onEditTask={() => {}}
-        onDeleteTask={() => {}}
-        onToggleSession={() => {}}
-        onStartPomodoro={() => {}}
-        onShowShareDialog={() => {}}
-      />
-    </div>
   ),
   "circle-timer": (
     <div className="flex justify-center border rounded-md p-4 bg-white">
