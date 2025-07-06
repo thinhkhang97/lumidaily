@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/lib/components/ThemeProvider";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { MainNavbar } from "@/components/MainNavbar";
 import { ThemeScript } from "@/lib/components/ThemeScript";
+import { SWRProvider } from "@/lib/providers/SWRProvider";
 
 const kalam = Kalam({
   variable: "--font-kalam",
@@ -46,9 +47,11 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ThemeProvider>
-            <MainNavbar />
-            <main className="min-h-screen">{children}</main>
-            <Toaster />
+            <SWRProvider>
+              <MainNavbar />
+              <main className="min-h-screen">{children}</main>
+              <Toaster />
+            </SWRProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>

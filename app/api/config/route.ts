@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Task } from "@/lib/types";
+import { PomodoroConfig } from "@/lib/types";
+import { DEFAULT_CONFIG } from "@/lib/services/ConfigService";
 
 // This is a placeholder implementation
 // In production, you would integrate with a database
@@ -21,15 +22,13 @@ export async function GET(request: NextRequest) {
     // In a real implementation, you would:
     // 1. Verify the token
     // 2. Get the user ID from the token
-    // 3. Fetch the user's tasks from the database
+    // 3. Fetch the user's config from the database
 
-    // For now, return an empty array or sample data
+    // For now, return the default config
     // The client will fall back to localStorage
-    const tasks: Task[] = [];
-
-    return NextResponse.json(tasks);
+    return NextResponse.json(DEFAULT_CONFIG);
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Error fetching config:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -48,12 +47,24 @@ export async function PUT(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     // TODO: Use token for authentication when implementing database
-    const tasks = (await request.json()) as Task[];
+    const config = (await request.json()) as PomodoroConfig;
 
-    // Validate tasks data
-    if (!Array.isArray(tasks)) {
+    // Validate config data
+    if (!config || typeof config !== "object") {
       return NextResponse.json(
-        { error: "Invalid tasks data" },
+        { error: "Invalid config data" },
+        { status: 400 }
+      );
+    }
+
+    // Basic validation for required fields
+    if (
+      typeof config.pomodoroMinutes !== "number" ||
+      typeof config.breakMinutes !== "number" ||
+      typeof config.volume !== "number"
+    ) {
+      return NextResponse.json(
+        { error: "Invalid config format" },
         { status: 400 }
       );
     }
@@ -61,14 +72,14 @@ export async function PUT(request: NextRequest) {
     // In a real implementation, you would:
     // 1. Verify the token
     // 2. Get the user ID from the token
-    // 3. Validate the tasks data
-    // 4. Save the tasks to the database
+    // 3. Validate the config data
+    // 4. Save the config to the database
 
-    // For now, just return the received tasks
+    // For now, just return the received config
     // The client will handle localStorage as fallback
-    return NextResponse.json(tasks);
+    return NextResponse.json(config);
   } catch (error) {
-    console.error("Error updating tasks:", error);
+    console.error("Error updating config:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

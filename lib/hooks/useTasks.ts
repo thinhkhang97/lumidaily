@@ -1,112 +1,112 @@
 import { TaskService } from "@/lib/services/TaskService";
 import { Task } from "@/lib/types";
 import { isSameDay } from "date-fns";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
 
 interface UseTasksOptions {
-  // Will be used later when authentication is implemented
   authState?: {
     isAuthenticated: boolean;
     token?: string;
   };
-  initialDate?: Date; // Optional initial date to load tasks for
+  initialDate?: Date;
 }
 
-export function useTasks(options: UseTasksOptions = {}) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [allTasks, setAllTasks] = useState<Task[]>([]); // Store all tasks
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    options.initialDate || new Date()
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+// Fetcher function for SWR
+const tasksFetcher = async (url: string, token?: string): Promise<Task[]> => {
+  if (token) {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    return await response.json();
+  } else {
+    // Use local storage when no token
+    return TaskService.getTasksFromLocalStorage();
+  }
+};
 
-  const { authState } = options;
+// Mutation function for creating/updating tasks
+const updateTasksMutation = async (
+  url: string,
+  { arg }: { arg: { tasks: Task[]; token?: string } }
+): Promise<Task[]> => {
+  const { tasks, token } = arg;
+
+  if (token) {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(tasks),
+    });
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    return await response.json();
+  } else {
+    // Use local storage when no token
+    TaskService.saveTasksToLocalStorage(tasks);
+    return tasks;
+  }
+};
+
+export function useTasks(options: UseTasksOptions = {}) {
+  const { authState, initialDate } = options;
+  const selectedDate = initialDate || new Date();
   const isAuthenticated = authState?.isAuthenticated || false;
   const authToken = authState?.token;
 
-  // Load all tasks on initial render
-  useEffect(() => {
-    const loadAllTasks = async () => {
-      setIsLoading(true);
-      try {
-        let loadedTasks: Task[];
+  // SWR key for tasks
+  const tasksKey = isAuthenticated ? "/api/tasks" : "tasks-local";
 
-        // If authenticated, try to load from API first
-        if (isAuthenticated && authToken) {
-          loadedTasks = await TaskService.fetchTasksFromApi(authToken);
-        } else {
-          // Otherwise load from localStorage
-          loadedTasks = TaskService.getTasksFromLocalStorage();
-        }
+  // Fetch all tasks using SWR
+  const {
+    data: allTasks = [],
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(tasksKey, (url: string) => tasksFetcher(url, authToken), {
+    fallbackData: [],
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 5000, // Dedupe requests within 5 seconds
+  });
 
-        setAllTasks(loadedTasks);
+  // Mutation hook for updating tasks
+  const { trigger: updateTasks, isMutating } = useSWRMutation(
+    tasksKey,
+    updateTasksMutation,
+    {
+      onSuccess: (data) => {
+        // Optimistically update the cache
+        mutate(data, false);
+      },
+      onError: (error) => {
+        console.error("Error updating tasks:", error);
+        // Revalidate on error to get the correct state
+        mutate();
+      },
+    }
+  );
 
-        // Filter tasks for the selected date
-        const filteredTasks = loadedTasks.filter((task) =>
-          isSameDay(new Date(task.date), selectedDate)
-        );
-        setTasks(filteredTasks);
-
-        setError(null);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Unknown error loading tasks")
-        );
-        // Fall back to localStorage if API fails
-        const localTasks = TaskService.getTasksFromLocalStorage();
-        setAllTasks(localTasks);
-
-        // Filter tasks for the selected date
-        const filteredTasks = localTasks.filter((task) =>
-          isSameDay(new Date(task.date), selectedDate)
-        );
-        setTasks(filteredTasks);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadAllTasks();
-  }, [isAuthenticated, authToken]);
-
-  // Filter tasks when selected date changes
-  useEffect(() => {
-    const filteredTasks = allTasks.filter((task) =>
+  // Filter tasks for the selected date
+  const tasks = useMemo(() => {
+    return allTasks.filter((task) =>
       isSameDay(new Date(task.date), selectedDate)
     );
-    setTasks(filteredTasks);
-  }, [selectedDate, allTasks]);
-
-  // Save all tasks whenever they change
-  useEffect(() => {
-    if (allTasks.length === 0 && isLoading) return; // Skip initial empty state
-
-    const saveTasks = async () => {
-      try {
-        if (isAuthenticated && authToken) {
-          await TaskService.saveTasksToApi(allTasks, authToken);
-        } else {
-          TaskService.saveTasksToLocalStorage(allTasks);
-        }
-      } catch (err) {
-        console.error("Error saving tasks:", err);
-        // Always save to localStorage as backup
-        TaskService.saveTasksToLocalStorage(allTasks);
-      }
-    };
-
-    saveTasks();
-  }, [allTasks, isAuthenticated, authToken, isLoading]);
-
-  // Change the selected date
-  const changeDate = useCallback((date: Date) => {
-    setSelectedDate(date);
-  }, []);
+  }, [allTasks, selectedDate]);
 
   // Task manipulation functions
   const addTask = useCallback(
-    (task: Omit<Task, "id" | "date">, date?: Date) => {
+    async (task: Omit<Task, "id" | "date">, date?: Date) => {
       const taskDate = date || selectedDate;
       const newTask: Task = {
         ...task,
@@ -114,54 +114,101 @@ export function useTasks(options: UseTasksOptions = {}) {
         date: taskDate.toISOString(),
       };
 
-      setAllTasks((currentTasks) => [...currentTasks, newTask]);
-      // The filtered tasks will update automatically via the useEffect
+      const updatedTasks = [...allTasks, newTask];
+
+      // Optimistic update
+      mutate(updatedTasks, false);
+
+      // Trigger the mutation
+      try {
+        await updateTasks({ tasks: updatedTasks, token: authToken });
+      } catch (error) {
+        console.error("Error adding task:", error);
+        // Revert optimistic update on error
+        mutate();
+      }
     },
-    [selectedDate]
+    [allTasks, selectedDate, mutate, updateTasks, authToken]
   );
 
   const updateTask = useCallback(
-    (id: string, updates: Partial<Omit<Task, "id" | "date">>) => {
-      setAllTasks((currentTasks) =>
-        currentTasks.map((task) =>
-          task.id === id ? { ...task, ...updates } : task
-        )
+    async (id: string, updates: Partial<Omit<Task, "id" | "date">>) => {
+      const updatedTasks = allTasks.map((task) =>
+        task.id === id ? { ...task, ...updates } : task
       );
-      // The filtered tasks will update automatically via the useEffect
+
+      // Optimistic update
+      mutate(updatedTasks, false);
+
+      // Trigger the mutation
+      try {
+        await updateTasks({ tasks: updatedTasks, token: authToken });
+      } catch (error) {
+        console.error("Error updating task:", error);
+        // Revert optimistic update on error
+        mutate();
+      }
     },
-    []
+    [allTasks, mutate, updateTasks, authToken]
   );
 
-  const deleteTask = useCallback((id: string) => {
-    setAllTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== id)
-    );
-    // The filtered tasks will update automatically via the useEffect
-  }, []);
+  const deleteTask = useCallback(
+    async (id: string) => {
+      const updatedTasks = allTasks.filter((task) => task.id !== id);
 
-  // Move a task to a different date
-  const moveTaskToDate = useCallback((taskId: string, newDate: Date) => {
-    const dateString = newDate.toISOString();
+      // Optimistic update
+      mutate(updatedTasks, false);
 
-    setAllTasks((currentTasks) =>
-      currentTasks.map((task) =>
+      // Trigger the mutation
+      try {
+        await updateTasks({ tasks: updatedTasks, token: authToken });
+      } catch (error) {
+        console.error("Error deleting task:", error);
+        // Revert optimistic update on error
+        mutate();
+      }
+    },
+    [allTasks, mutate, updateTasks, authToken]
+  );
+
+  const moveTaskToDate = useCallback(
+    async (taskId: string, newDate: Date) => {
+      const dateString = newDate.toISOString();
+      const updatedTasks = allTasks.map((task) =>
         task.id === taskId ? { ...task, date: dateString } : task
-      )
-    );
-    // The filtered tasks will update automatically via the useEffect
-  }, []);
+      );
+
+      // Optimistic update
+      mutate(updatedTasks, false);
+
+      // Trigger the mutation
+      try {
+        await updateTasks({ tasks: updatedTasks, token: authToken });
+      } catch (error) {
+        console.error("Error moving task:", error);
+        // Revert optimistic update on error
+        mutate();
+      }
+    },
+    [allTasks, mutate, updateTasks, authToken]
+  );
+
+  // Function to manually revalidate tasks
+  const revalidate = useCallback(() => {
+    mutate();
+  }, [mutate]);
 
   return {
-    tasks, // Tasks for the selected date only
-    allTasks, // All tasks across all dates
+    tasks,
+    allTasks,
     selectedDate,
     isLoading,
+    isMutating,
     error,
-    changeDate,
     addTask,
     updateTask,
     deleteTask,
     moveTaskToDate,
-    setAllTasks, // Expose this for initialization or bulk updates
+    revalidate,
   };
 }

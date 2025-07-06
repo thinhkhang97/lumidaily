@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,8 +21,13 @@ interface ConfigDialogProps {
 }
 
 export function ConfigDialog({ open, onOpenChange }: ConfigDialogProps) {
-  const { config, updateConfig } = useConfig();
+  const { config, updateConfig, isLoading, isMutating, error } = useConfig();
   const [formValues, setFormValues] = useState<PomodoroConfig>({ ...config });
+
+  // Update form values when config changes
+  useEffect(() => {
+    setFormValues({ ...config });
+  }, [config]);
 
   const handleInputChange = (field: keyof PomodoroConfig, value: number) => {
     setFormValues({
@@ -31,10 +36,15 @@ export function ConfigDialog({ open, onOpenChange }: ConfigDialogProps) {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateConfig(formValues);
-    onOpenChange(false);
+    try {
+      await updateConfig(formValues);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to update config:", error);
+      // Keep the dialog open to show the error
+    }
   };
 
   const handleCancel = () => {
@@ -48,58 +58,69 @@ export function ConfigDialog({ open, onOpenChange }: ConfigDialogProps) {
         <DialogHeader>
           <DialogTitle>Pomodoro Settings</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 py-4">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="pomodoroMinutes">
-                Pomodoro Session (minutes)
-              </Label>
-              <Input
-                id="pomodoroMinutes"
-                type="number"
-                min={1}
-                max={60}
-                value={formValues.pomodoroMinutes}
-                onChange={(e) =>
-                  handleInputChange("pomodoroMinutes", parseInt(e.target.value))
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="breakMinutes">Break Time (minutes)</Label>
-              <Input
-                id="breakMinutes"
-                type="number"
-                min={1}
-                max={30}
-                value={formValues.breakMinutes}
-                onChange={(e) =>
-                  handleInputChange("breakMinutes", parseInt(e.target.value))
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="volume">Volume ({formValues.volume}%)</Label>
-              <Slider
-                id="volume"
-                defaultValue={[formValues.volume]}
-                max={100}
-                step={1}
-                onValueChange={(values) =>
-                  handleInputChange("volume", values[0])
-                }
-                className="py-4"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="pomodoro-minutes">
+              Pomodoro Duration (minutes)
+            </Label>
+            <Input
+              id="pomodoro-minutes"
+              type="number"
+              min="1"
+              max="60"
+              value={formValues.pomodoroMinutes}
+              onChange={(e) =>
+                handleInputChange("pomodoroMinutes", parseInt(e.target.value))
+              }
+              disabled={isLoading || isMutating}
+            />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="break-minutes">Break Duration (minutes)</Label>
+            <Input
+              id="break-minutes"
+              type="number"
+              min="1"
+              max="30"
+              value={formValues.breakMinutes}
+              onChange={(e) =>
+                handleInputChange("breakMinutes", parseInt(e.target.value))
+              }
+              disabled={isLoading || isMutating}
+            />
+          </div>
+
+          <div className="space-y-4">
+            <Label>Volume: {formValues.volume}%</Label>
+            <Slider
+              value={[formValues.volume]}
+              onValueChange={(value) => handleInputChange("volume", value[0])}
+              max={100}
+              min={0}
+              step={10}
+              disabled={isLoading || isMutating}
+            />
+          </div>
+
+          {error && (
+            <div className="text-destructive text-sm">
+              Failed to save configuration. Please try again.
+            </div>
+          )}
+
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isMutating}
+            >
               Cancel
             </Button>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={isLoading || isMutating}>
+              {isMutating ? "Saving..." : "Save"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
