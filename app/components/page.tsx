@@ -85,6 +85,7 @@ const componentsByCategory = {
   "Application Components": [
     { name: "Task Table", path: "task-table" },
     { name: "Task List", path: "task-list" },
+    { name: "Pomodoro", path: "pomodoro" },
   ],
 };
 
@@ -293,21 +294,26 @@ const componentExamples: Record<string, React.ReactNode> = {
     <div className="p-2 border rounded-md">Theme Provider Example</div>
   ),
   "circle-timer": (
-    <div className="flex justify-center border rounded-md p-4 bg-white">
+    <div className="flex flex-col items-center">
       <CircleTimer
         duration={60}
         currentTime={45}
-        size={120}
+        size={100}
+        strokeWidth={6}
         isRunning={true}
-        progressColor="#e89a4f"
-        trackColor="#f0f0f0"
-        strokeWidth={10}
       >
-        <div className="text-center">
-          <span className="text-xl font-medium">00:45</span>
-          <div className="text-xs mt-1 text-primary animate-pulse">Demo</div>
-        </div>
+        <span className="text-lg font-semibold">0:45</span>
       </CircleTimer>
+    </div>
+  ),
+  pomodoro: (
+    <div className="p-4 border rounded-md bg-muted/30">
+      <div className="text-center">
+        <h3 className="text-lg font-medium">Pomodoro Timer</h3>
+        <p className="text-sm text-muted-foreground">
+          Focus timer with YouTube music integration
+        </p>
+      </div>
     </div>
   ),
 };
