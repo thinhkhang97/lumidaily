@@ -67,6 +67,7 @@ export function PomodoroSession({
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fullScreenContainerRef = useRef<HTMLDivElement>(null);
+  const originalTitle = useRef<string>(document.title);
 
   // Calculate isFinalSession only once to avoid re-renders
   const isFinalSession = useMemo(() => {
@@ -93,6 +94,35 @@ export function PomodoroSession({
       }
     };
   }, [volume]);
+
+  // Update document title with countdown and task name
+  useEffect(() => {
+    // Save the original title when component mounts
+    originalTitle.current = document.title;
+
+    // Update the title with the current time and task name
+    const formatTime = () => {
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = (currentTime % 60).toString().padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    };
+
+    const sessionPrefix =
+      sessionState === SessionState.WORK
+        ? "🔴 "
+        : sessionState === SessionState.BREAK
+        ? "🟢 "
+        : "";
+    const timeDisplay = formatTime();
+    const taskName = task?.name || "Pomodoro";
+
+    document.title = `${sessionPrefix}${timeDisplay} - ${taskName}`;
+
+    // Restore the original title when component unmounts
+    return () => {
+      document.title = originalTitle.current;
+    };
+  }, [currentTime, task, sessionState]);
 
   // Handle ESC key press to exit full-screen mode
   useEffect(() => {
