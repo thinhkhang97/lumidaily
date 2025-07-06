@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Extract token and verify it
-    const token = authHeader.split(" ")[1];
+    // const token = authHeader.split(" ")[1];
 
     // TODO: Use token for authentication when implementing database
 
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest) {
   }
 
   try {
-    const token = authHeader.split(" ")[1];
+    // const token = authHeader.split(" ")[1];
 
     // TODO: Use token for authentication when implementing database
     const config = (await request.json()) as PomodoroConfig;

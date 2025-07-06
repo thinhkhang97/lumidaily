@@ -20,11 +20,11 @@ export function SWRProvider({ children }: SWRProviderProps) {
         focusThrottleInterval: 5000, // Throttle focus revalidation
         errorRetryCount: 3, // Retry failed requests 3 times
         errorRetryInterval: 5000, // Wait 5 seconds between retries
-        onError: (error) => {
-          console.error("SWR Error:", error);
+        onError: () => {
+          // console.error("SWR Error:", error);
         },
-        onSuccess: (data, key) => {
-          console.log("SWR Success:", key, data);
+        onSuccess: () => {
+          // console.log("SWR Success:", key, data);
         },
         // You can add more global configuration here
       }}

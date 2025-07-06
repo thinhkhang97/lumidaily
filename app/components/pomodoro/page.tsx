@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PomodoroSession } from "@/components/PomodoroSession";
+import { PomodoroSession } from "@/components/pomodoro";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -7,9 +7,8 @@ import { AppTaskTable } from "@/components/AppTaskTable";
 import { AppCalendar } from "@/components/AppCalendar";
 import { PomodoroSession } from "@/components/PomodoroSession";
 import { TaskDialog } from "@/components/TaskDialog";
-import { useTasks } from "@/lib/hooks/useTasks";
+import { useTasksWithDate } from "@/lib/hooks/useTasksWithDate";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { formatDateString } from "@/lib/services/TaskService";
 import { useConfig } from "@/lib/hooks/useConfig";
 
 export default function AppPage() {
@@ -25,8 +24,7 @@ export default function AppPage() {
     addTask: addTaskToStore,
     updateTask: updateTaskInStore,
     deleteTask: deleteTaskFromStore,
-    moveTaskToDate,
-  } = useTasks({
+  } = useTasksWithDate({
     authState,
     initialDate: new Date(), // Start with today's date
   });
@@ -110,13 +108,6 @@ export default function AppPage() {
         name,
         plannedSessions,
       });
-
-      // If the date has changed, move the task to the new date
-      const taskDateString = editingTask.date;
-      const newDateString = formatDateString(date);
-      if (taskDateString !== newDateString) {
-        moveTaskToDate(editingTask.id, date);
-      }
     } else {
       // Create new task with the selected date
       addTaskToStore(
@@ -206,9 +197,7 @@ export default function AppPage() {
             initialName={editingTask?.name || ""}
             initialSessions={editingTask?.plannedSessions || 1}
             initialDate={
-              editingTask
-                ? new Date(editingTask.date + "T00:00:00")
-                : selectedDate
+              editingTask ? new Date(editingTask.date) : selectedDate
             }
             onSave={handleSaveTask}
             onCancel={handleCancelTaskDialog}
