@@ -74,6 +74,9 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
       iv_load_policy: 3,
       modestbranding: 1,
       rel: 0,
+      enablejsapi: 1,
+      origin: typeof window !== 'undefined' ? window.location.origin : '',
+      host: 'https://www.youtube-nocookie.com'
     },
   };
 
@@ -116,7 +119,8 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     }
   };
 
-  const startTimeUpdateInterval = () => {
+  // Define startTimeUpdateInterval with useCallback
+  const startTimeUpdateInterval = useCallback(() => {
     // Clear any existing interval
     if (timeUpdateInterval.current) {
       clearInterval(timeUpdateInterval.current);
@@ -124,20 +128,28 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
 
     // Set new interval to update current time
     timeUpdateInterval.current = setInterval(() => {
-      if (youtubeRef.current && youtubeRef.current.getPlayerState) {
-        // Only update time if player is actually playing (state 1)
-        const playerState = youtubeRef.current.getPlayerState();
-        if (playerState === 1) {
-          try {
+      if (youtubeRef.current && typeof youtubeRef.current.getPlayerState === 'function') {
+        try {
+          // Only update time if player is actually playing (state 1)
+          const playerState = youtubeRef.current.getPlayerState();
+          if (playerState === 1) {
             const currentTime = youtubeRef.current.getCurrentTime() || 0;
-            setCurrentTime(currentTime);
-          } catch (err) {
-            console.error("Error getting current time:", err);
+            if (!isNaN(currentTime)) {
+              setCurrentTime(currentTime);
+            }
+            
+            // Also check duration in case it wasn't properly set earlier
+            const videoDuration = youtubeRef.current.getDuration();
+            if (!isNaN(videoDuration) && videoDuration > 0 && videoDuration !== duration) {
+              setDuration(videoDuration);
+            }
           }
+        } catch (err) {
+          console.error("Error in time update interval:", err);
         }
       }
     }, 500); // Update more frequently for smoother slider movement
-  };
+  }, [duration]);  // Add duration as a dependency
 
   // Use callback for interval cleanup to avoid potential memory leaks
   const cleanupTimeInterval = useCallback(() => {
@@ -159,7 +171,7 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     } else {
       cleanupTimeInterval();
     }
-  }, [isMusicPlaying, cleanupTimeInterval]);
+  }, [isMusicPlaying, cleanupTimeInterval, startTimeUpdateInterval]);
 
   // When current index changes, load that video
   useEffect(() => {
@@ -229,10 +241,13 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     }
   };
 
-  // Format time in MM:SS format
+  // Format time in MM:SS format with safety checks
   const formatTime = (timeInSeconds: number) => {
-    const minutes = Math.floor((timeInSeconds || 0) / 60);
-    const seconds = Math.floor((timeInSeconds || 0) % 60);
+    if (timeInSeconds === undefined || timeInSeconds === null || isNaN(timeInSeconds)) {
+      return "0:00";
+    }
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
