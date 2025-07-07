@@ -11,6 +11,7 @@ import {
   SkipForward,
 } from "lucide-react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
+import { useCallback } from "react";
 
 interface MusicPlayerProps {
   volume?: number;
@@ -83,8 +84,12 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     setIsMusicPlaying(true);
 
     // Get video duration and title
-    setDuration(youtubeRef.current.getDuration());
-    setVideoTitle(youtubeRef.current.getVideoData().title);
+    const videoDuration = youtubeRef.current.getDuration();
+    setDuration(videoDuration || 0);
+    setVideoTitle(youtubeRef.current.getVideoData()?.title || "");
+
+    // Reset current time
+    setCurrentTime(0);
 
     // Start time update interval
     startTimeUpdateInterval();
@@ -95,6 +100,19 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     if (event.data === 0) {
       // Video ended
       handleNextTrack();
+    } else if (event.data === 1) {
+      // Video started playing
+      setIsMusicPlaying(true);
+      // Update duration now that it's definitely available
+      if (youtubeRef.current) {
+        const videoDuration = youtubeRef.current.getDuration();
+        if (videoDuration && videoDuration > 0) {
+          setDuration(videoDuration);
+        }
+      }
+    } else if (event.data === 2) {
+      // Video paused
+      setIsMusicPlaying(false);
     }
   };
 
@@ -106,20 +124,42 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
 
     // Set new interval to update current time
     timeUpdateInterval.current = setInterval(() => {
-      if (youtubeRef.current && isMusicPlaying) {
-        setCurrentTime(youtubeRef.current.getCurrentTime());
+      if (youtubeRef.current && youtubeRef.current.getPlayerState) {
+        // Only update time if player is actually playing (state 1)
+        const playerState = youtubeRef.current.getPlayerState();
+        if (playerState === 1) {
+          try {
+            const currentTime = youtubeRef.current.getCurrentTime() || 0;
+            setCurrentTime(currentTime);
+          } catch (err) {
+            console.error("Error getting current time:", err);
+          }
+        }
       }
-    }, 1000);
+    }, 500); // Update more frequently for smoother slider movement
   };
+
+  // Use callback for interval cleanup to avoid potential memory leaks
+  const cleanupTimeInterval = useCallback(() => {
+    if (timeUpdateInterval.current) {
+      clearInterval(timeUpdateInterval.current);
+      timeUpdateInterval.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     // Clean up interval on component unmount
-    return () => {
-      if (timeUpdateInterval.current) {
-        clearInterval(timeUpdateInterval.current);
-      }
-    };
-  }, []);
+    return cleanupTimeInterval;
+  }, [cleanupTimeInterval]);
+
+  // Restart interval when play state changes
+  useEffect(() => {
+    if (isMusicPlaying) {
+      startTimeUpdateInterval();
+    } else {
+      cleanupTimeInterval();
+    }
+  }, [isMusicPlaying, cleanupTimeInterval]);
 
   // When current index changes, load that video
   useEffect(() => {
@@ -128,6 +168,8 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
       currentIndex >= 0 &&
       currentIndex < playlist.length
     ) {
+      // Reset current time when changing videos
+      setCurrentTime(0);
       setVideoId(playlist[currentIndex]);
     }
   }, [currentIndex, playlist]);
@@ -155,7 +197,11 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     const newTime = parseFloat(e.target.value);
     setCurrentTime(newTime);
     if (youtubeRef.current) {
-      youtubeRef.current.seekTo(newTime, true);
+      try {
+        youtubeRef.current.seekTo(newTime, true);
+      } catch (err) {
+        console.error("Error seeking to time:", err);
+      }
     }
   };
 
@@ -185,8 +231,8 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
 
   // Format time in MM:SS format
   const formatTime = (timeInSeconds: number) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
+    const minutes = Math.floor((timeInSeconds || 0) / 60);
+    const seconds = Math.floor((timeInSeconds || 0) % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
@@ -251,16 +297,26 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
                   <input
                     type="range"
                     min="0"
-                    max={duration || 100}
-                    value={currentTime}
+                    max={Math.max(duration || 100, 1)}
+                    value={Math.min(currentTime || 0, duration || 100)}
                     onChange={handleTimeChange}
                     className="w-full accent-primary"
                     style={{
                       height: "4px",
                       background: `linear-gradient(to right, var(--primary) ${
-                        (currentTime / duration) * 100
-                      }%, var(--muted) ${(currentTime / duration) * 100}%)`,
+                        duration > 0
+                          ? Math.min((currentTime / duration) * 100, 100)
+                          : 0
+                      }%, var(--muted) ${
+                        duration > 0
+                          ? Math.min((currentTime / duration) * 100, 100)
+                          : 0
+                      }%)`,
                       borderRadius: "2px",
+                    }}
+                    // Add passive attribute
+                    onTouchStart={() => {
+                      /* passive by default */
                     }}
                   />
                 </div>
@@ -320,6 +376,10 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
                       height: "4px",
                       background: `linear-gradient(to right, var(--primary) ${musicVolume}%, var(--muted) ${musicVolume}%)`,
                       borderRadius: "2px",
+                    }}
+                    // Add passive attribute
+                    onTouchStart={() => {
+                      /* passive by default */
                     }}
                   />
                   <Volume2 className="h-4 w-4 text-foreground" />
