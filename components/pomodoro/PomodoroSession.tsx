@@ -30,6 +30,11 @@ export function PomodoroSession({
   }>({});
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
+  // Time-based timer state
+  const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
+  const [pausedTime, setPausedTime] = useState<number>(0);
+  const [lastPauseTime, setLastPauseTime] = useState<number>(0);
+
   // Music-related state
   const [showPlaylistPanel, setShowPlaylistPanel] = useState<boolean>(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
@@ -109,13 +114,63 @@ export function PomodoroSession({
     };
   }, [currentTime, task, sessionState]);
 
-  // Main timer logic
+  // Helper function to calculate remaining time based on actual elapsed time
+  const calculateRemainingTime = (sessionDuration: number) => {
+    if (!isRunning) return currentTime;
+
+    const now = Date.now();
+    const totalElapsed = (now - sessionStartTime - pausedTime) / 1000;
+    const remaining = Math.max(0, sessionDuration - totalElapsed);
+
+    return Math.ceil(remaining);
+  };
+
+  // Get current session duration
+  const getCurrentSessionDuration = () => {
+    switch (sessionState) {
+      case SessionState.WORK:
+        return initialTime;
+      case SessionState.BREAK:
+        return breakTime;
+      default:
+        return 0;
+    }
+  };
+
+  // Page Visibility API - recalculate time when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isRunning) {
+        // Tab became visible, recalculate the correct time
+        const sessionDuration = getCurrentSessionDuration();
+        const correctTime = calculateRemainingTime(sessionDuration);
+        setCurrentTime(correctTime);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [
+    isRunning,
+    sessionStartTime,
+    pausedTime,
+    sessionState,
+    initialTime,
+    breakTime,
+  ]);
+
+  // Main timer logic - now time-based instead of tick-based
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
+
     if (isRunning && currentTime > 0) {
       interval = setInterval(() => {
-        setCurrentTime((prevTime) => {
-          const newTime = prevTime - 1;
+        const sessionDuration = getCurrentSessionDuration();
+        const newTime = calculateRemainingTime(sessionDuration);
+
+        setCurrentTime(() => {
           // Play sound at 5s and 2s
           if ((newTime === 5 || newTime === 2) && !hasPlayedSound[newTime]) {
             if (audioRef.current) {
@@ -133,6 +188,10 @@ export function PomodoroSession({
               onComplete?.();
               if (!isFinalSession) {
                 setSessionState(SessionState.BREAK);
+                // Reset timer state for break
+                setSessionStartTime(Date.now());
+                setPausedTime(0);
+                setHasPlayedSound({});
                 return breakTime;
               } else {
                 setSessionState(SessionState.COMPLETED_TASK);
@@ -141,13 +200,17 @@ export function PomodoroSession({
             } else if (sessionState === SessionState.BREAK) {
               setSessionState(SessionState.WORK);
               setIsRunning(false);
+              // Reset timer state for next work session
+              setSessionStartTime(Date.now());
+              setPausedTime(0);
+              setHasPlayedSound({});
               return initialTime;
             }
           }
 
           return newTime > 0 ? newTime : 0;
         });
-      }, 1000);
+      }, 100); // Use smaller interval for smoother updates, but calculate based on actual time
     }
 
     return () => {
@@ -157,18 +220,36 @@ export function PomodoroSession({
     };
   }, [
     isRunning,
-    currentTime,
     sessionState,
     hasPlayedSound,
     isFinalSession,
     breakTime,
     initialTime,
     onComplete,
+    sessionStartTime,
+    pausedTime,
   ]);
+
+  // Reset timer state when session state changes
+  useEffect(() => {
+    setSessionStartTime(Date.now());
+    setPausedTime(0);
+    setLastPauseTime(0);
+    setHasPlayedSound({});
+  }, [sessionState]);
 
   // Timer control handlers
   const handlePauseResume = () => {
-    setIsRunning((prev) => !prev);
+    if (isRunning) {
+      // Pausing
+      setLastPauseTime(Date.now());
+      setIsRunning(false);
+    } else {
+      // Resuming
+      const pauseDuration = Date.now() - lastPauseTime;
+      setPausedTime((prev) => prev + pauseDuration);
+      setIsRunning(true);
+    }
   };
 
   const handleCancel = () => {
@@ -184,6 +265,10 @@ export function PomodoroSession({
   const handleSkip = () => {
     setSessionState(SessionState.WORK);
     setCurrentTime(initialTime);
+    setSessionStartTime(Date.now());
+    setPausedTime(0);
+    setLastPauseTime(0);
+    setHasPlayedSound({});
     setIsRunning(true);
   };
 
