@@ -27,9 +27,41 @@ const handlee = Handlee({
 });
 
 export const metadata: Metadata = {
-  title: "LumiDaily",
+  title: "LumiDaily | Mindful Productivity Planner",
   description:
-    "Your mindful daily pomodoro companion - designed for focus and well-being",
+    "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features. Designed for focus and well-being.",
+  keywords:
+    "productivity, pomodoro technique, mindfulness, task management, focus timer, wellness, work-life balance",
+  authors: [{ name: "LumiDaily Team" }],
+  openGraph: {
+    title: "LumiDaily | Mindful Productivity Planner",
+    description:
+      "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features.",
+    url: "https://lumidaily.com",
+    siteName: "LumiDaily",
+    images: [
+      {
+        url: "/images/lumidaily-og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "LumiDaily - Mindful Productivity Planner",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LumiDaily | Mindful Productivity Planner",
+    description:
+      "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features.",
+    images: ["/images/lumidaily-twitter.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  metadataBase: new URL("https://lumidaily.com"),
 };
 
 export default function RootLayout({
@@ -41,6 +73,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <ThemeScript />
+        <link rel="canonical" href="https://lumidaily.com" />
       </head>
       <body
         className={`${kalam.variable} ${patrickHand.variable} ${handlee.variable} antialiased`}

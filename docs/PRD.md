@@ -11,11 +11,11 @@
 
 ### Vision Statement
 
-Lumidaily transforms productivity from a source of stress into a mindful, calming practice by combining the proven Pomodoro Technique with daily reflection, beautiful handwritten aesthetics, and wellness-focused design.
+Lumidaily transforms productivity from a source of stress into a calming, effective practice by combining the proven Pomodoro Technique with daily reflection, beautiful handwritten aesthetics, and wellness-focused design.
 
 ### Mission
 
-To help individuals achieve meaningful productivity while maintaining mental well-being through a thoughtfully designed, paper-inspired digital experience that feels personal, calming, and sustainable.
+To help individuals achieve meaningful productivity while maintaining focus and well-being through a thoughtfully designed, paper-inspired digital experience that feels personal, calming, and sustainable.
 
 ---
 
@@ -23,11 +23,11 @@ To help individuals achieve meaningful productivity while maintaining mental wel
 
 ### What is Lumidaily?
 
-Lumidaily is a mindful productivity planner that combines:
+Lumidaily is a calming productivity planner that combines:
 
 - **Pomodoro Timer Sessions** with customizable durations
 - **Daily Task Planning** with session-based tracking
-- **Mindfulness Features** including gratitude journaling
+- **YouTube Music Integration** for focus enhancement
 - **Progress Analytics** with streak tracking and insights
 - **Handwritten Aesthetic** that reduces digital fatigue
 
@@ -50,7 +50,7 @@ Lumidaily is a mindful productivity planner that combines:
 
 1. **Wellness-First Approach** - Productivity without burnout
 2. **Handwritten Aesthetic** - Reduces screen fatigue and feels personal
-3. **Integrated Reflection** - Combines productivity with mindfulness
+3. **Integrated Music & Focus Tools** - YouTube integration for enhanced focus
 4. **Offline-First** - Works completely without internet
 5. **Privacy-Focused** - All data stored locally
 
@@ -68,11 +68,10 @@ Lumidaily is a mindful productivity planner that combines:
 - [x] Break timer with automatic transitions
 - [x] Dark/light mode toggle
 - [x] Local data persistence
+- [x] YouTube music integration in Pomodoro sessions
 
-#### ✅ Mindfulness Features
+#### ✅ Focus & Wellness Features
 
-- [x] Daily gratitude journaling
-- [x] Quick notes and checklist functionality
 - [x] Inspirational daily quotes with typewriter effect
 - [x] Calming handwritten design aesthetic
 
@@ -108,15 +107,15 @@ Lumidaily is a mindful productivity planner that combines:
 
 1. **Digital Overwhelm** - Traditional productivity apps feel cold and stressful
 2. **Burnout Culture** - Productivity tools often encourage overwork
-3. **Lack of Reflection** - Focus on doing without considering well-being
+3. **Focus Challenges** - Difficulty maintaining concentration during work sessions
 4. **Generic Design** - Apps that feel impersonal and corporate
 5. **Privacy Concerns** - Data stored on external servers
 
 ### Market Gaps
 
 - Most productivity apps prioritize features over user well-being
-- Limited integration of mindfulness with task management
-- Few apps offer truly offline-first experiences
+- Limited integration of music and focus tools with productivity apps
+- Few apps offer truly offline-first experiences with cross-device sync options
 - Lack of aesthetically pleasing, calming interfaces
 
 ---
@@ -125,10 +124,10 @@ Lumidaily is a mindful productivity planner that combines:
 
 ### Primary Goals
 
-1. **Increase Mindful Productivity** - Help users be productive without stress
+1. **Increase Effective Productivity** - Help users be productive without stress
 2. **Build Sustainable Habits** - Encourage consistent, balanced work patterns
-3. **Enhance Well-being** - Integrate reflection and gratitude into daily routine
-4. **Provide Calm Focus** - Create a peaceful, distraction-free environment
+3. **Enhance Focus** - Provide tools for maintaining concentration
+4. **Provide Calm Environment** - Create a peaceful, distraction-free workspace
 
 ### Success Metrics
 
@@ -144,7 +143,8 @@ Lumidaily is a mindful productivity planner that combines:
 - **Net Promoter Score (NPS)** - Target: 50+
 - **User Retention** - Target: 60% return after 30 days
 - **Session Duration** - Target: Average 25-minute focused sessions
-- **Stress Reduction** - Qualitative feedback on reduced work anxiety
+- **Focus Improvement** - Qualitative feedback on improved concentration
+- **YouTube Integration Usage** - Target: 50% of sessions use music integration
 
 #### Product Performance
 
@@ -159,17 +159,17 @@ Lumidaily is a mindful productivity planner that combines:
 
 ### Phase 1: Enhanced Core Experience (Q1 2025)
 
-#### 1.1 Improved Timer Experience
+#### 1.1 Improved Timer & Focus Experience
 
 **Priority:** High  
 **Effort:** Medium
 
 **Requirements:**
 
-- [ ] **Enhanced Break Suggestions**
-  - Guided breathing exercises during breaks
-  - Gentle movement suggestions
-  - Mindfulness prompts
+- [ ] **Enhanced Music Integration**
+  - Expanded YouTube music controls
+  - Custom playlists and favorites
+  - Auto-play based on session type
 - [ ] **Smart Session Recommendations**
   - Adaptive timer duration based on task complexity
   - Energy level tracking and recommendations
@@ -177,39 +177,39 @@ Lumidaily is a mindful productivity planner that combines:
 - [ ] **Advanced Audio Features**
   - Multiple notification sound options
   - Background focus sounds (rain, cafe, etc.)
-  - Voice-guided break activities
+  - Session completion celebrations
 
 **Acceptance Criteria:**
 
-- Users can select from 5+ break activity types
+- Users can create and save 5+ music playlists
 - Audio options include 3+ ambient sound categories
 - Session recommendations improve completion rates by 15%
 
-#### 1.2 Enhanced Reflection Features
+#### 1.2 Daily Reflection Features
 
 **Priority:** High  
 **Effort:** Medium
 
 **Requirements:**
 
-- [ ] **Mood Tracking Integration**
+- [ ] **Mood & Stress Tracking**
   - Simple mood check-ins before/after sessions
   - Correlation with productivity patterns
-  - Mood-based session recommendations
-- [ ] **Weekly Reflection Prompts**
-  - Guided questions for deeper self-awareness
-  - Progress celebration and goal adjustment
-  - Stress pattern identification
-- [ ] **Gratitude Enhancement**
-  - Photo attachments for gratitude entries
-  - Gratitude sharing (optional)
-  - Gratitude streak tracking
+  - Stress level monitoring
+- [ ] **Notes During Sessions**
+  - Quick capture of ideas during focus time
+  - Session-specific notes organization
+  - Note templates for different tasks
+- [ ] **Daily Reflection Tool**
+  - End-of-day accomplishment review
+  - Progress visualization
+  - Next-day planning assistance
 
 **Acceptance Criteria:**
 
 - Mood tracking shows correlation insights
-- Weekly reflection completion rate >40%
-- Gratitude entries increase user satisfaction scores
+- Notes feature used in >30% of sessions
+- Daily reflection completion rate >40%
 
 #### 1.3 Collaboration Features
 
@@ -239,7 +239,7 @@ Lumidaily is a mindful productivity planner that combines:
 
 ### Phase 2: Intelligence & Personalization (Q2 2025)
 
-#### 2.1 Smart Insights & Recommendations
+#### 2.1 Smart Insights & Lumi Assistant
 
 **Priority:** High  
 **Effort:** High
@@ -250,20 +250,20 @@ Lumidaily is a mindful productivity planner that combines:
   - Identify optimal work times
   - Task complexity vs. energy correlation
   - Burnout risk detection and prevention
-- [ ] **Personalized Coaching**
-  - AI-powered productivity suggestions
-  - Habit formation guidance
-  - Stress management recommendations
-- [ ] **Goal Setting & Tracking**
-  - SMART goal framework integration
-  - Progress visualization
-  - Adaptive goal adjustment
+- [ ] **Lumi Assistant Integration**
+  - AI-powered productivity insights
+  - Daily story writing based on accomplishments
+  - Personalized focus recommendations
+- [ ] **Theme Customization**
+  - Multiple visual themes
+  - Custom color palettes
+  - Font options for different preferences
 
 **Acceptance Criteria:**
 
 - Pattern analysis provides actionable insights
-- Coaching recommendations improve user outcomes
-- Goal completion rates increase by 25%
+- Lumi Assistant generates meaningful daily stories
+- Theme options increase user satisfaction by 30%
 
 #### 2.2 Advanced Analytics
 
@@ -293,7 +293,7 @@ Lumidaily is a mindful productivity planner that combines:
 
 ### Phase 3: Ecosystem & Expansion (Q3-Q4 2025)
 
-#### 3.1 Mobile Applications
+#### 3.1 Mobile Applications & Cross-Device Sync
 
 **Priority:** High  
 **Effort:** High
@@ -309,14 +309,16 @@ Lumidaily is a mindful productivity planner that combines:
   - Android widget support
   - Wear OS integration
 - [ ] **Cross-Platform Sync**
-  - Seamless data synchronization
+  - Seamless data synchronization across devices
   - Offline-first with sync capabilities
+  - Secure cloud storage options
   - Conflict resolution
 
 **Acceptance Criteria:**
 
 - Mobile apps maintain design consistency
 - Sync works reliably across all platforms
+- Data transfers securely between devices
 - Mobile-specific features enhance core experience
 
 #### 3.2 Integrations & API
@@ -620,9 +622,10 @@ Lumidaily is a mindful productivity planner that combines:
 **Premium Tier ($4.99/month or $39.99/year):**
 
 - Advanced analytics and insights
-- Team collaboration features
 - Premium themes and customization
 - Cloud sync across devices
+- Lumi Assistant features
+- Session notes and daily reflection tools
 - Priority support
 
 #### Additional Revenue Streams
