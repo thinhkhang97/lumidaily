@@ -1,10 +1,40 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useRef, useEffect, useCallback } from "react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 import { MusicTrack } from "@/lib/types";
 import { MusicService, extractVideoId } from "@/lib/services/MusicService";
+
+// YouTube API types
+interface YouTubeAPI {
+  PlayerState: {
+    PLAYING: number;
+    PAUSED: number;
+    ENDED: number;
+  };
+}
+
+// Music player controls interface
+interface MusicPlayerControls {
+  playPause: () => void;
+  handleVolumeChange: (volume: number) => void;
+  handleProgressChange: (progress: number) => void;
+  handlePreviousTrack: () => void;
+  handleNextTrack: () => void;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
+  isPlaying: boolean;
+  progress: number;
+  volume: number;
+}
+
+// Extend window interface
+declare global {
+  interface Window {
+    YT: YouTubeAPI;
+    musicPlayerControls: MusicPlayerControls;
+  }
+}
 
 interface MusicPlayerProps {
   volume?: number;
@@ -15,6 +45,8 @@ interface MusicPlayerProps {
     trackId: string,
     details: { title?: string; duration?: number }
   ) => void;
+  onVolumeChange?: (volume: number) => void;
+  onProgressChange?: (progress: number) => void;
 }
 
 export function MusicPlayer({
@@ -23,295 +55,278 @@ export function MusicPlayer({
   onTrackChange,
   onPlayStateChange,
   onTrackDetailsUpdate,
+  onVolumeChange,
+  onProgressChange,
 }: MusicPlayerProps) {
-  const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
-  const [musicVolume, setMusicVolume] = useState<number>(volume);
-  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-  const youtubeRef = useRef<YouTubePlayer | null>(null);
-  const timeUpdateInterval = useRef<NodeJS.Timeout | null>(null);
+  const [currentVolume, setCurrentVolume] = useState<number>(volume);
+
+  const playerRef = useRef<YouTubePlayer | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isUserSeeking = useRef<boolean>(false);
 
   // YouTube player options
-  const youtubeOpts = {
+  const playerOptions = {
     height: "0",
     width: "0",
     playerVars: {
       autoplay: 1,
       controls: 0,
-      disablekb: 1,
-      fs: 0,
-      iv_load_policy: 3,
       modestbranding: 1,
       rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
       enablejsapi: 1,
-      origin: typeof window !== "undefined" ? window.location.origin : "",
-      host: "https://www.youtube-nocookie.com",
     },
   };
 
   // Update volume when prop changes
   useEffect(() => {
-    setMusicVolume(volume);
-    if (youtubeRef.current) {
-      youtubeRef.current.setVolume(volume);
+    if (currentVolume !== volume) {
+      setCurrentVolume(volume);
+      if (playerRef.current) {
+        playerRef.current.setVolume(volume);
+      }
     }
-  }, [volume]);
+  }, [volume, currentVolume]);
+
+  // Progress tracking
+  const startProgressTracking = useCallback(() => {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+    }
+
+    progressIntervalRef.current = setInterval(() => {
+      if (playerRef.current && !isUserSeeking.current) {
+        try {
+          const currentTime = playerRef.current.getCurrentTime();
+          const totalDuration = playerRef.current.getDuration();
+
+          if (totalDuration > 0) {
+            const newProgress = (currentTime / totalDuration) * 100;
+            setProgress(newProgress);
+            onProgressChange?.(newProgress);
+          }
+        } catch (error) {
+          console.error("Error getting player time:", error);
+        }
+      }
+    }, 1000);
+  }, [onProgressChange]);
+
+  const stopProgressTracking = useCallback(() => {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+  }, []);
 
   // YouTube player event handlers
-  const onPlayerReady = (event: YouTubeEvent) => {
-    youtubeRef.current = event.target;
-    youtubeRef.current.setVolume(musicVolume);
-    setIsMusicPlaying(true);
+  const onPlayerReady = useCallback(
+    (event: YouTubeEvent) => {
+      playerRef.current = event.target;
+      playerRef.current.setVolume(currentVolume);
 
-    // Get video duration and title
-    const videoDuration = youtubeRef.current.getDuration();
-    const videoTitle = youtubeRef.current.getVideoData()?.title || "";
+      // Get video duration and title
+      try {
+        const videoDuration = playerRef.current.getDuration();
+        const videoData = playerRef.current.getVideoData();
 
-    setDuration(videoDuration || 0);
-    setCurrentTime(0);
-
-    // Update track details in service if we have a current track
-    if (currentTrack && videoTitle) {
-      onTrackDetailsUpdate(currentTrack.id, {
-        title: videoTitle,
-        duration: videoDuration || undefined,
-      });
-      MusicService.updateTrackDetails(currentTrack.id, {
-        title: videoTitle,
-        duration: videoDuration || undefined,
-      });
-    }
-
-    // Notify parent of play state change
-    onPlayStateChange(true);
-
-    // Start time update interval
-    startTimeUpdateInterval();
-  };
-
-  const onPlayerStateChange = (event: YouTubeEvent) => {
-    // YouTube state: -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
-    if (event.data === 0) {
-      // Video ended - play next track
-      handleNextTrack();
-    } else if (event.data === 1) {
-      // Video started playing
-      setIsMusicPlaying(true);
-      onPlayStateChange(true);
-
-      // Update duration now that it's definitely available
-      if (youtubeRef.current) {
-        const videoDuration = youtubeRef.current.getDuration();
-        if (videoDuration && videoDuration > 0) {
+        if (currentTrack && videoDuration > 0) {
           setDuration(videoDuration);
-
-          // Update track details if changed
-          if (currentTrack && videoDuration !== currentTrack.duration) {
-            onTrackDetailsUpdate(currentTrack.id, { duration: videoDuration });
-            MusicService.updateTrackDetails(currentTrack.id, {
-              duration: videoDuration,
-            });
-          }
+          onTrackDetailsUpdate(currentTrack.id, {
+            title: videoData.title || currentTrack.title,
+            duration: videoDuration,
+          });
         }
+      } catch (error) {
+        console.error("Error getting video details:", error);
       }
-    } else if (event.data === 2) {
-      // Video paused
-      setIsMusicPlaying(false);
-      onPlayStateChange(false);
-    }
-  };
+    },
+    [currentTrack, currentVolume, onTrackDetailsUpdate]
+  );
 
-  // Define startTimeUpdateInterval with useCallback
-  const startTimeUpdateInterval = useCallback(() => {
-    // Clear any existing interval
-    if (timeUpdateInterval.current) {
-      clearInterval(timeUpdateInterval.current);
-    }
+  const onPlayerStateChange = useCallback(
+    (event: YouTubeEvent) => {
+      const state = event.data;
+      const YT = window.YT;
 
-    // Set new interval to update current time
-    timeUpdateInterval.current = setInterval(() => {
-      if (
-        youtubeRef.current &&
-        typeof youtubeRef.current.getPlayerState === "function"
-      ) {
-        try {
-          // Only update time if player is actually playing (state 1)
-          const playerState = youtubeRef.current.getPlayerState();
-          if (playerState === 1) {
-            const currentTime = youtubeRef.current.getCurrentTime() || 0;
-            if (!isNaN(currentTime)) {
-              setCurrentTime(currentTime);
-            }
+      if (!YT) return;
 
-            // Also check duration in case it wasn't properly set earlier
-            const videoDuration = youtubeRef.current.getDuration();
-            if (
-              !isNaN(videoDuration) &&
-              videoDuration > 0 &&
-              videoDuration !== duration
-            ) {
-              setDuration(videoDuration);
-            }
-          }
-        } catch (err) {
-          console.error("Error in time update interval:", err);
-        }
+      switch (state) {
+        case YT.PlayerState.PLAYING:
+          setIsPlaying(true);
+          onPlayStateChange(true);
+          startProgressTracking();
+          break;
+        case YT.PlayerState.PAUSED:
+          setIsPlaying(false);
+          onPlayStateChange(false);
+          stopProgressTracking();
+          break;
+        case YT.PlayerState.ENDED:
+          setIsPlaying(false);
+          onPlayStateChange(false);
+          stopProgressTracking();
+          // Auto-play next track if available
+          handleNextTrack();
+          break;
+        default:
+          break;
       }
-    }, 500); // Update more frequently for smoother updates
-  }, [duration]);
+    },
+    [onPlayStateChange, startProgressTracking, stopProgressTracking]
+  );
 
-  // Use callback for interval cleanup to avoid potential memory leaks
-  const cleanupTimeInterval = useCallback(() => {
-    if (timeUpdateInterval.current) {
-      clearInterval(timeUpdateInterval.current);
-      timeUpdateInterval.current = null;
-    }
-  }, []);
+  // Control functions
+  const playPause = useCallback(() => {
+    if (!playerRef.current) return;
 
-  useEffect(() => {
-    // Clean up interval on component unmount
-    return cleanupTimeInterval;
-  }, [cleanupTimeInterval]);
-
-  // Restart interval when play state changes
-  useEffect(() => {
-    if (isMusicPlaying) {
-      startTimeUpdateInterval();
-    } else {
-      cleanupTimeInterval();
-    }
-  }, [isMusicPlaying, cleanupTimeInterval, startTimeUpdateInterval]);
-
-  // Public methods for parent components to control playback
-  const togglePlayback = useCallback(() => {
-    if (youtubeRef.current) {
-      if (isMusicPlaying) {
-        youtubeRef.current.pauseVideo();
+    try {
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
       } else {
-        youtubeRef.current.playVideo();
+        playerRef.current.playVideo();
       }
+    } catch (error) {
+      console.error("Error controlling playback:", error);
     }
-  }, [isMusicPlaying]);
+  }, [isPlaying]);
 
-  const setVolume = useCallback((newVolume: number) => {
-    setMusicVolume(newVolume);
-    if (youtubeRef.current) {
-      youtubeRef.current.setVolume(newVolume);
-    }
-  }, []);
+  const handleVolumeChange = useCallback(
+    (newVolume: number) => {
+      setCurrentVolume(newVolume);
+      if (playerRef.current) {
+        playerRef.current.setVolume(newVolume);
+      }
+      onVolumeChange?.(newVolume);
+    },
+    [onVolumeChange]
+  );
 
-  const seekTo = useCallback((timeInSeconds: number) => {
-    if (youtubeRef.current) {
-      youtubeRef.current.seekTo(timeInSeconds, true);
-      setCurrentTime(timeInSeconds);
-    }
-  }, []);
+  const handleProgressChange = useCallback(
+    (newProgress: number) => {
+      if (!playerRef.current || !duration) return;
 
-  const handleNextTrack = useCallback(() => {
-    const nextTrack = MusicService.getNextTrack();
-    if (nextTrack) {
-      MusicService.updateCurrentTrack(nextTrack.id);
-      onTrackChange(nextTrack);
-    }
-  }, [onTrackChange]);
+      isUserSeeking.current = true;
+      const seekTime = (newProgress / 100) * duration;
+
+      try {
+        playerRef.current.seekTo(seekTime, true);
+        setProgress(newProgress);
+
+        // Resume progress tracking after a short delay
+        setTimeout(() => {
+          isUserSeeking.current = false;
+        }, 500);
+      } catch (error) {
+        console.error("Error seeking:", error);
+        isUserSeeking.current = false;
+      }
+    },
+    [duration]
+  );
 
   const handlePreviousTrack = useCallback(() => {
-    const previousTrack = MusicService.getPreviousTrack();
-    if (previousTrack) {
+    const playlist = MusicService.getPlaylistFromLocalStorage();
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
+
+    if (currentIndex > 0) {
+      const previousTrack = playlist.tracks[currentIndex - 1];
       MusicService.updateCurrentTrack(previousTrack.id);
       onTrackChange(previousTrack);
     }
-  }, [onTrackChange]);
+  }, [currentTrack, onTrackChange]);
 
-  const loadTrack = useCallback(
-    (track: MusicTrack) => {
-      // Reset state for new track
-      setCurrentTime(0);
-      setDuration(track.duration || 0);
+  const handleNextTrack = useCallback(() => {
+    const playlist = MusicService.getPlaylistFromLocalStorage();
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
 
-      // Update current track in service
-      MusicService.updateCurrentTrack(track.id);
-      onTrackChange(track);
-    },
-    [onTrackChange]
-  );
+    if (currentIndex < playlist.tracks.length - 1) {
+      const nextTrack = playlist.tracks[currentIndex + 1];
+      MusicService.updateCurrentTrack(nextTrack.id);
+      onTrackChange(nextTrack);
+    }
+  }, [currentTrack, onTrackChange]);
 
-  const addTrack = useCallback(
-    async (url: string) => {
-      try {
-        // Extract video ID to get basic info
-        const videoId = extractVideoId(url);
-        if (!videoId) {
-          throw new Error("Invalid YouTube URL");
-        }
+  // Navigation helpers
+  const canGoPrevious = useCallback(() => {
+    const playlist = MusicService.getPlaylistFromLocalStorage();
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
+    return currentIndex > 0;
+  }, [currentTrack]);
 
-        // Add track to service (will get title from YouTube when loaded)
-        const newTrack = MusicService.addTrackToPlaylist(url);
-        if (newTrack) {
-          // If this is the first track, start playing it
-          const playlist = MusicService.getPlaylistFromLocalStorage();
-          if (playlist.tracks.length === 1) {
-            loadTrack(newTrack);
-          }
-          return newTrack;
-        }
+  const canGoNext = useCallback(() => {
+    const playlist = MusicService.getPlaylistFromLocalStorage();
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
+    return currentIndex < playlist.tracks.length - 1;
+  }, [currentTrack]);
 
-        return null;
-      } catch (error) {
-        console.error("Error adding track:", error);
-        return null;
-      }
-    },
-    [loadTrack]
-  );
-
-  // Expose methods to parent via ref or callbacks
+  // Cleanup on unmount
   useEffect(() => {
-    // You can extend this to expose methods if needed
-  }, []);
+    return () => {
+      stopProgressTracking();
+    };
+  }, [stopProgressTracking]);
+
+  // Reset progress when track changes
+  useEffect(() => {
+    setProgress(0);
+    setDuration(0);
+    stopProgressTracking();
+  }, [currentTrack?.id, stopProgressTracking]);
+
+  // Expose control functions to parent
+  useEffect(() => {
+    // Store control functions in a way that parent can access them
+    window.musicPlayerControls = {
+      playPause,
+      handleVolumeChange,
+      handleProgressChange,
+      handlePreviousTrack,
+      handleNextTrack,
+      canGoPrevious: canGoPrevious(),
+      canGoNext: canGoNext(),
+      isPlaying,
+      progress,
+      volume: currentVolume,
+    };
+  }, [
+    playPause,
+    handleVolumeChange,
+    handleProgressChange,
+    handlePreviousTrack,
+    handleNextTrack,
+    canGoPrevious,
+    canGoNext,
+    isPlaying,
+    progress,
+    currentVolume,
+  ]);
+
+  if (!currentTrack) {
+    return null;
+  }
 
   return (
     <div className="hidden">
-      {/* Hidden YouTube Music Player */}
-      {currentTrack && (
-        <YouTube
-          videoId={currentTrack.videoId}
-          opts={youtubeOpts}
-          onReady={onPlayerReady}
-          onStateChange={onPlayerStateChange}
-        />
-      )}
+      <YouTube
+        key={currentTrack.id}
+        videoId={extractVideoId(currentTrack.url) || ""}
+        opts={playerOptions}
+        onReady={onPlayerReady}
+        onStateChange={onPlayerStateChange}
+      />
     </div>
   );
 }
-
-// Export additional control functions that parent components can use
-export const useMusicPlayerControls = () => {
-  return {
-    togglePlayback: () => {
-      // This would be handled by the parent component
-    },
-    nextTrack: () => {
-      const nextTrack = MusicService.getNextTrack();
-      if (nextTrack) {
-        MusicService.updateCurrentTrack(nextTrack.id);
-        return nextTrack;
-      }
-      return null;
-    },
-    previousTrack: () => {
-      const previousTrack = MusicService.getPreviousTrack();
-      if (previousTrack) {
-        MusicService.updateCurrentTrack(previousTrack.id);
-        return previousTrack;
-      }
-      return null;
-    },
-    getCurrentTrack: () => {
-      return MusicService.getCurrentTrack();
-    },
-    addTrackFromUrl: (url: string) => {
-      return MusicService.addTrackToPlaylist(url);
-    },
-  };
-};

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { TimerDisplay } from "./TimerDisplay";
 import { MusicPlayer } from "./MusicPlayer";
+import { MusicPlayerUI } from "./MusicPlayerUI";
 import { ControlButtons } from "./ControlButtons";
 import { Toolbar } from "./Toolbar";
 import { PlaylistPanel } from "./PlaylistPanel";
@@ -33,6 +34,8 @@ export function PomodoroSession({
   const [showPlaylistPanel, setShowPlaylistPanel] = useState<boolean>(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
+  const [musicProgress, setMusicProgress] = useState<number>(0);
+  const [musicVolume, setMusicVolume] = useState<number>(volume);
   const [playlist, setPlaylist] = useState(
     MusicService.getPlaylistFromLocalStorage()
   );
@@ -263,6 +266,64 @@ export function PomodoroSession({
     }
   };
 
+  // Music player UI control handlers
+  const handleMusicVolumeChange = (newVolume: number) => {
+    setMusicVolume(newVolume);
+    if (window.musicPlayerControls) {
+      window.musicPlayerControls.handleVolumeChange(newVolume);
+    }
+  };
+
+  const handleMusicProgressChange = (newProgress: number) => {
+    setMusicProgress(newProgress);
+    if (window.musicPlayerControls) {
+      window.musicPlayerControls.handleProgressChange(newProgress);
+    }
+  };
+
+  const handleMusicPreviousTrack = () => {
+    if (window.musicPlayerControls) {
+      window.musicPlayerControls.handlePreviousTrack();
+    }
+  };
+
+  const handleMusicNextTrack = () => {
+    if (window.musicPlayerControls) {
+      window.musicPlayerControls.handleNextTrack();
+    }
+  };
+
+  const handleMusicPlayPauseUI = () => {
+    if (window.musicPlayerControls) {
+      window.musicPlayerControls.playPause();
+    }
+  };
+
+  // Update music progress from MusicPlayer
+  const handleMusicProgress = (progress: number) => {
+    setMusicProgress(progress);
+  };
+
+  // Update music volume from MusicPlayer
+  const handleMusicVolumeUpdate = (newVolume: number) => {
+    setMusicVolume(newVolume);
+  };
+
+  // Helper functions for music player navigation
+  const canGoPrevious = () => {
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
+    return currentIndex > 0;
+  };
+
+  const canGoNext = () => {
+    const currentIndex = playlist.tracks.findIndex(
+      (track) => track.id === currentTrack?.id
+    );
+    return currentIndex < playlist.tracks.length - 1;
+  };
+
   // Utility functions
   const getSessionDuration = () => {
     switch (sessionState) {
@@ -297,27 +358,48 @@ export function PomodoroSession({
           getSessionDuration={getSessionDuration}
         />
 
+        {/* Music Player UI - only show if there are tracks */}
+        {currentTrack && (
+          <MusicPlayerUI
+            currentTrack={currentTrack}
+            isMusicPlaying={isMusicPlaying}
+            volume={musicVolume}
+            progress={musicProgress}
+            onPlayPause={handleMusicPlayPauseUI}
+            onPreviousTrack={handleMusicPreviousTrack}
+            onNextTrack={handleMusicNextTrack}
+            onVolumeChange={handleMusicVolumeChange}
+            onProgressChange={handleMusicProgressChange}
+            canGoPrevious={canGoPrevious()}
+            canGoNext={canGoNext()}
+          />
+        )}
+
         {/* Updated MusicPlayer with new props */}
         <MusicPlayer
-          volume={volume}
+          volume={musicVolume}
           currentTrack={currentTrack}
           onTrackChange={handleTrackChange}
           onPlayStateChange={handlePlayStateChange}
           onTrackDetailsUpdate={handleTrackDetailsUpdate}
+          onVolumeChange={handleMusicVolumeUpdate}
+          onProgressChange={handleMusicProgress}
         />
 
-        <ControlButtons
-          sessionState={sessionState}
-          isRunning={isRunning}
-          isFinalSession={isFinalSession}
-          currentTime={currentTime}
-          initialTime={initialTime}
-          breakTime={breakTime}
-          onPauseResume={handlePauseResume}
-          onCancel={handleCancel}
-          onSkip={handleSkip}
-          onCompleteTask={handleCompleteTask}
-        />
+        <div className="mt-8">
+          <ControlButtons
+            sessionState={sessionState}
+            isRunning={isRunning}
+            isFinalSession={isFinalSession}
+            currentTime={currentTime}
+            initialTime={initialTime}
+            breakTime={breakTime}
+            onPauseResume={handlePauseResume}
+            onCancel={handleCancel}
+            onSkip={handleSkip}
+            onCompleteTask={handleCompleteTask}
+          />
+        </div>
 
         {/* New Toolbar Component */}
         <Toolbar
