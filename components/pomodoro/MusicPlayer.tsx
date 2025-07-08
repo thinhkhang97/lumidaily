@@ -1,66 +1,35 @@
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Music,
-  Pause,
-  Play,
-  Volume2,
-  VolumeX,
-  SkipBack,
-  SkipForward,
-} from "lucide-react";
+"use client";
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState, useRef, useEffect, useCallback } from "react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
-import { useCallback } from "react";
+import { MusicTrack } from "@/lib/types";
+import { MusicService, extractVideoId } from "@/lib/services/MusicService";
 
 interface MusicPlayerProps {
   volume?: number;
+  currentTrack: MusicTrack | null;
+  onTrackChange: (track: MusicTrack | null) => void;
+  onPlayStateChange: (isPlaying: boolean) => void;
+  onTrackDetailsUpdate: (
+    trackId: string,
+    details: { title?: string; duration?: number }
+  ) => void;
 }
 
-export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
-  const [youtubeUrl, setYoutubeUrl] = useState<string>("");
-  const [videoId, setVideoId] = useState<string | null>(null);
+export function MusicPlayer({
+  volume = 50,
+  currentTrack,
+  onTrackChange,
+  onPlayStateChange,
+  onTrackDetailsUpdate,
+}: MusicPlayerProps) {
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
   const [musicVolume, setMusicVolume] = useState<number>(volume);
-  const [showMusicControls, setShowMusicControls] = useState<boolean>(false);
-  const [videoTitle, setVideoTitle] = useState<string>("");
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-  const [playlist, setPlaylist] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const youtubeRef = useRef<YouTubePlayer | null>(null);
   const timeUpdateInterval = useRef<NodeJS.Timeout | null>(null);
-
-  // Extract YouTube video ID from URL
-  const extractVideoId = (url: string) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
-
-  // Handle YouTube URL input
-  const handleYoutubeUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setYoutubeUrl(e.target.value);
-  };
-
-  // Load YouTube video
-  const handleLoadYoutubeVideo = () => {
-    const id = extractVideoId(youtubeUrl);
-    if (id) {
-      // Add to playlist if not already in it
-      if (!playlist.includes(id)) {
-        setPlaylist((prev) => [...prev, id]);
-        setCurrentIndex(playlist.length);
-      } else {
-        // If already in playlist, just switch to it
-        const index = playlist.indexOf(id);
-        setCurrentIndex(index);
-      }
-      setVideoId(id);
-      setYoutubeUrl("");
-    }
-  };
 
   // YouTube player options
   const youtubeOpts = {
@@ -75,10 +44,18 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
       modestbranding: 1,
       rel: 0,
       enablejsapi: 1,
-      origin: typeof window !== 'undefined' ? window.location.origin : '',
-      host: 'https://www.youtube-nocookie.com'
+      origin: typeof window !== "undefined" ? window.location.origin : "",
+      host: "https://www.youtube-nocookie.com",
     },
   };
+
+  // Update volume when prop changes
+  useEffect(() => {
+    setMusicVolume(volume);
+    if (youtubeRef.current) {
+      youtubeRef.current.setVolume(volume);
+    }
+  }, [volume]);
 
   // YouTube player event handlers
   const onPlayerReady = (event: YouTubeEvent) => {
@@ -88,11 +65,25 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
 
     // Get video duration and title
     const videoDuration = youtubeRef.current.getDuration();
-    setDuration(videoDuration || 0);
-    setVideoTitle(youtubeRef.current.getVideoData()?.title || "");
+    const videoTitle = youtubeRef.current.getVideoData()?.title || "";
 
-    // Reset current time
+    setDuration(videoDuration || 0);
     setCurrentTime(0);
+
+    // Update track details in service if we have a current track
+    if (currentTrack && videoTitle) {
+      onTrackDetailsUpdate(currentTrack.id, {
+        title: videoTitle,
+        duration: videoDuration || undefined,
+      });
+      MusicService.updateTrackDetails(currentTrack.id, {
+        title: videoTitle,
+        duration: videoDuration || undefined,
+      });
+    }
+
+    // Notify parent of play state change
+    onPlayStateChange(true);
 
     // Start time update interval
     startTimeUpdateInterval();
@@ -101,21 +92,32 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
   const onPlayerStateChange = (event: YouTubeEvent) => {
     // YouTube state: -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
     if (event.data === 0) {
-      // Video ended
+      // Video ended - play next track
       handleNextTrack();
     } else if (event.data === 1) {
       // Video started playing
       setIsMusicPlaying(true);
+      onPlayStateChange(true);
+
       // Update duration now that it's definitely available
       if (youtubeRef.current) {
         const videoDuration = youtubeRef.current.getDuration();
         if (videoDuration && videoDuration > 0) {
           setDuration(videoDuration);
+
+          // Update track details if changed
+          if (currentTrack && videoDuration !== currentTrack.duration) {
+            onTrackDetailsUpdate(currentTrack.id, { duration: videoDuration });
+            MusicService.updateTrackDetails(currentTrack.id, {
+              duration: videoDuration,
+            });
+          }
         }
       }
     } else if (event.data === 2) {
       // Video paused
       setIsMusicPlaying(false);
+      onPlayStateChange(false);
     }
   };
 
@@ -128,7 +130,10 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
 
     // Set new interval to update current time
     timeUpdateInterval.current = setInterval(() => {
-      if (youtubeRef.current && typeof youtubeRef.current.getPlayerState === 'function') {
+      if (
+        youtubeRef.current &&
+        typeof youtubeRef.current.getPlayerState === "function"
+      ) {
         try {
           // Only update time if player is actually playing (state 1)
           const playerState = youtubeRef.current.getPlayerState();
@@ -137,10 +142,14 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
             if (!isNaN(currentTime)) {
               setCurrentTime(currentTime);
             }
-            
+
             // Also check duration in case it wasn't properly set earlier
             const videoDuration = youtubeRef.current.getDuration();
-            if (!isNaN(videoDuration) && videoDuration > 0 && videoDuration !== duration) {
+            if (
+              !isNaN(videoDuration) &&
+              videoDuration > 0 &&
+              videoDuration !== duration
+            ) {
               setDuration(videoDuration);
             }
           }
@@ -148,8 +157,8 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
           console.error("Error in time update interval:", err);
         }
       }
-    }, 500); // Update more frequently for smoother slider movement
-  }, [duration]);  // Add duration as a dependency
+    }, 500); // Update more frequently for smoother updates
+  }, [duration]);
 
   // Use callback for interval cleanup to avoid potential memory leaks
   const cleanupTimeInterval = useCallback(() => {
@@ -173,244 +182,136 @@ export function MusicPlayer({ volume = 50 }: MusicPlayerProps) {
     }
   }, [isMusicPlaying, cleanupTimeInterval, startTimeUpdateInterval]);
 
-  // When current index changes, load that video
-  useEffect(() => {
-    if (
-      playlist.length > 0 &&
-      currentIndex >= 0 &&
-      currentIndex < playlist.length
-    ) {
-      // Reset current time when changing videos
-      setCurrentTime(0);
-      setVideoId(playlist[currentIndex]);
-    }
-  }, [currentIndex, playlist]);
-
-  const toggleMusicPlayback = () => {
+  // Public methods for parent components to control playback
+  const togglePlayback = useCallback(() => {
     if (youtubeRef.current) {
       if (isMusicPlaying) {
         youtubeRef.current.pauseVideo();
       } else {
         youtubeRef.current.playVideo();
       }
-      setIsMusicPlaying(!isMusicPlaying);
     }
-  };
+  }, [isMusicPlaying]);
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseInt(e.target.value, 10);
+  const setVolume = useCallback((newVolume: number) => {
     setMusicVolume(newVolume);
     if (youtubeRef.current) {
       youtubeRef.current.setVolume(newVolume);
     }
-  };
+  }, []);
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
+  const seekTo = useCallback((timeInSeconds: number) => {
     if (youtubeRef.current) {
+      youtubeRef.current.seekTo(timeInSeconds, true);
+      setCurrentTime(timeInSeconds);
+    }
+  }, []);
+
+  const handleNextTrack = useCallback(() => {
+    const nextTrack = MusicService.getNextTrack();
+    if (nextTrack) {
+      MusicService.updateCurrentTrack(nextTrack.id);
+      onTrackChange(nextTrack);
+    }
+  }, [onTrackChange]);
+
+  const handlePreviousTrack = useCallback(() => {
+    const previousTrack = MusicService.getPreviousTrack();
+    if (previousTrack) {
+      MusicService.updateCurrentTrack(previousTrack.id);
+      onTrackChange(previousTrack);
+    }
+  }, [onTrackChange]);
+
+  const loadTrack = useCallback(
+    (track: MusicTrack) => {
+      // Reset state for new track
+      setCurrentTime(0);
+      setDuration(track.duration || 0);
+
+      // Update current track in service
+      MusicService.updateCurrentTrack(track.id);
+      onTrackChange(track);
+    },
+    [onTrackChange]
+  );
+
+  const addTrack = useCallback(
+    async (url: string) => {
       try {
-        youtubeRef.current.seekTo(newTime, true);
-      } catch (err) {
-        console.error("Error seeking to time:", err);
-      }
-    }
-  };
-
-  const handlePreviousTrack = () => {
-    if (playlist.length > 1) {
-      // If we're more than 3 seconds into the song, restart it instead of going to previous
-      if (currentTime > 3) {
-        if (youtubeRef.current) {
-          youtubeRef.current.seekTo(0, true);
-          setCurrentTime(0);
+        // Extract video ID to get basic info
+        const videoId = extractVideoId(url);
+        if (!videoId) {
+          throw new Error("Invalid YouTube URL");
         }
-      } else {
-        // Go to previous track
-        setCurrentIndex((prevIndex) => {
-          const newIndex = prevIndex > 0 ? prevIndex - 1 : playlist.length - 1;
-          return newIndex;
-        });
+
+        // Add track to service (will get title from YouTube when loaded)
+        const newTrack = MusicService.addTrackToPlaylist(url);
+        if (newTrack) {
+          // If this is the first track, start playing it
+          const playlist = MusicService.getPlaylistFromLocalStorage();
+          if (playlist.tracks.length === 1) {
+            loadTrack(newTrack);
+          }
+          return newTrack;
+        }
+
+        return null;
+      } catch (error) {
+        console.error("Error adding track:", error);
+        return null;
       }
-    }
-  };
+    },
+    [loadTrack]
+  );
 
-  const handleNextTrack = () => {
-    if (playlist.length > 1) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % playlist.length);
-    }
-  };
-
-  // Format time in MM:SS format with safety checks
-  const formatTime = (timeInSeconds: number) => {
-    if (timeInSeconds === undefined || timeInSeconds === null || isNaN(timeInSeconds)) {
-      return "0:00";
-    }
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  // Expose methods to parent via ref or callbacks
+  useEffect(() => {
+    // You can extend this to expose methods if needed
+  }, []);
 
   return (
-    <div className="mb-6 w-full max-w-md">
-      {/* YouTube Music Player (hidden) */}
-      <div className="hidden">
-        {videoId && (
-          <YouTube
-            videoId={videoId}
-            opts={youtubeOpts}
-            onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange}
-          />
-        )}
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setShowMusicControls(!showMusicControls)}
-        className="mb-2 w-full flex justify-between items-center gentle-hover"
-      >
-        <Music className="h-4 w-4 mr-2 text-foreground" />
-        <span className="font-patrick-hand">Music Player</span>
-        {isMusicPlaying ? (
-          <Volume2 className="h-4 w-4 ml-2 text-foreground" />
-        ) : (
-          <VolumeX className="h-4 w-4 ml-2 text-foreground" />
-        )}
-      </Button>
-
-      {showMusicControls && (
-        <div className="p-grid-2 border rounded-md bg-card paper-texture paper-shadow soft-fade-in">
-          <div className="flex gap-grid-1 mb-4">
-            <Input
-              type="text"
-              placeholder="Enter YouTube URL"
-              value={youtubeUrl}
-              onChange={handleYoutubeUrlChange}
-              className="flex-1 font-patrick-hand soft-focus"
-            />
-            <Button
-              onClick={handleLoadYoutubeVideo}
-              size="sm"
-              className="gentle-hover"
-            >
-              Load
-            </Button>
-          </div>
-
-          {videoId && (
-            <div className="space-grid-2">
-              {/* Video Title */}
-              <div className="text-sm font-handlee truncate" title={videoTitle}>
-                {videoTitle || "Loading..."}
-              </div>
-
-              {/* Time Slider */}
-              <div className="space-grid-1">
-                <div className="flex items-center">
-                  <input
-                    type="range"
-                    min="0"
-                    max={Math.max(duration || 100, 1)}
-                    value={Math.min(currentTime || 0, duration || 100)}
-                    onChange={handleTimeChange}
-                    className="w-full accent-primary"
-                    style={{
-                      height: "4px",
-                      background: `linear-gradient(to right, var(--primary) ${
-                        duration > 0
-                          ? Math.min((currentTime / duration) * 100, 100)
-                          : 0
-                      }%, var(--muted) ${
-                        duration > 0
-                          ? Math.min((currentTime / duration) * 100, 100)
-                          : 0
-                      }%)`,
-                      borderRadius: "2px",
-                    }}
-                    // Add passive attribute
-                    onTouchStart={() => {
-                      /* passive by default */
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-muted-foreground font-patrick-hand">
-                  <span>{formatTime(currentTime)}</span>
-                  <span>{formatTime(duration)}</span>
-                </div>
-              </div>
-
-              {/* Playback Controls */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-grid-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handlePreviousTrack}
-                    disabled={playlist.length <= 1}
-                    className="gentle-hover"
-                  >
-                    <SkipBack className="h-4 w-4 text-foreground" />
-                  </Button>
-
-                  <Button
-                    variant={isMusicPlaying ? "secondary" : "default"}
-                    size="sm"
-                    onClick={toggleMusicPlayback}
-                    className="gentle-wobble"
-                  >
-                    {isMusicPlaying ? (
-                      <Pause className="h-4 w-4" />
-                    ) : (
-                      <Play className="h-4 w-4" />
-                    )}
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleNextTrack}
-                    disabled={playlist.length <= 1}
-                    className="gentle-hover"
-                  >
-                    <SkipForward className="h-4 w-4 text-foreground" />
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <VolumeX className="h-4 w-4 text-foreground" />
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={musicVolume}
-                    onChange={handleVolumeChange}
-                    className="w-24 accent-primary"
-                    style={{
-                      height: "4px",
-                      background: `linear-gradient(to right, var(--primary) ${musicVolume}%, var(--muted) ${musicVolume}%)`,
-                      borderRadius: "2px",
-                    }}
-                    // Add passive attribute
-                    onTouchStart={() => {
-                      /* passive by default */
-                    }}
-                  />
-                  <Volume2 className="h-4 w-4 text-foreground" />
-                </div>
-              </div>
-
-              {/* Playlist info */}
-              {playlist.length > 1 && (
-                <div className="text-xs text-muted-foreground font-patrick-hand">
-                  Track {currentIndex + 1} of {playlist.length}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+    <div className="hidden">
+      {/* Hidden YouTube Music Player */}
+      {currentTrack && (
+        <YouTube
+          videoId={currentTrack.videoId}
+          opts={youtubeOpts}
+          onReady={onPlayerReady}
+          onStateChange={onPlayerStateChange}
+        />
       )}
     </div>
   );
 }
+
+// Export additional control functions that parent components can use
+export const useMusicPlayerControls = () => {
+  return {
+    togglePlayback: () => {
+      // This would be handled by the parent component
+    },
+    nextTrack: () => {
+      const nextTrack = MusicService.getNextTrack();
+      if (nextTrack) {
+        MusicService.updateCurrentTrack(nextTrack.id);
+        return nextTrack;
+      }
+      return null;
+    },
+    previousTrack: () => {
+      const previousTrack = MusicService.getPreviousTrack();
+      if (previousTrack) {
+        MusicService.updateCurrentTrack(previousTrack.id);
+        return previousTrack;
+      }
+      return null;
+    },
+    getCurrentTrack: () => {
+      return MusicService.getCurrentTrack();
+    },
+    addTrackFromUrl: (url: string) => {
+      return MusicService.addTrackToPlaylist(url);
+    },
+  };
+};

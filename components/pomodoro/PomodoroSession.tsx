@@ -4,8 +4,12 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { TimerDisplay } from "./TimerDisplay";
 import { MusicPlayer } from "./MusicPlayer";
 import { ControlButtons } from "./ControlButtons";
+import { Toolbar } from "./Toolbar";
+import { PlaylistPanel } from "./PlaylistPanel";
 import { FullScreenManager, useFullScreen } from "./FullScreenManager";
 import { PomodoroSessionProps, SessionState, FullScreenElement } from "./types";
+import { MusicTrack } from "@/lib/types";
+import { MusicService } from "@/lib/services/MusicService";
 
 export function PomodoroSession({
   task,
@@ -25,6 +29,14 @@ export function PomodoroSession({
   }>({});
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
+  // Music-related state
+  const [showPlaylistPanel, setShowPlaylistPanel] = useState<boolean>(false);
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
+  const [playlist, setPlaylist] = useState(
+    MusicService.getPlaylistFromLocalStorage()
+  );
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fullScreenRef = useRef<HTMLDivElement>(null);
   const originalTitle = useRef<string>(document.title);
@@ -36,7 +48,16 @@ export function PomodoroSession({
     return task.completedSessions + 1 >= task.plannedSessions;
   }, [task]);
 
-  // Initialize audio
+  // Load current track on component mount
+  useEffect(() => {
+    const currentPlaylistTrack = MusicService.getCurrentTrack();
+    if (currentPlaylistTrack) {
+      setCurrentTrack(currentPlaylistTrack);
+    }
+    setPlaylist(MusicService.getPlaylistFromLocalStorage());
+  }, []);
+
+  // Initialize audio for timer notifications
   useEffect(() => {
     audioRef.current = new Audio(
       "https://cdn.freesound.org/previews/804/804760_6951162-lq.mp3"
@@ -142,6 +163,7 @@ export function PomodoroSession({
     onComplete,
   ]);
 
+  // Timer control handlers
   const handlePauseResume = () => {
     setIsRunning((prev) => !prev);
   };
@@ -149,6 +171,9 @@ export function PomodoroSession({
   const handleCancel = () => {
     if (isFullScreen) {
       setIsFullScreen(false);
+    }
+    if (showPlaylistPanel) {
+      setShowPlaylistPanel(false);
     }
     if (onCancel) onCancel();
   };
@@ -163,9 +188,13 @@ export function PomodoroSession({
     if (isFullScreen) {
       setIsFullScreen(false);
     }
+    if (showPlaylistPanel) {
+      setShowPlaylistPanel(false);
+    }
     onCancel?.();
   };
 
+  // Fullscreen handlers
   const toggleFullScreen = () => {
     if (!isFullScreen) {
       if (fullScreenRef.current) {
@@ -177,6 +206,64 @@ export function PomodoroSession({
     }
   };
 
+  // Music handlers
+  const handleTogglePlaylist = () => {
+    setShowPlaylistPanel((prev) => !prev);
+  };
+
+  const handleTrackChange = (track: MusicTrack | null) => {
+    setCurrentTrack(track);
+    // Refresh playlist state to reflect changes
+    setPlaylist(MusicService.getPlaylistFromLocalStorage());
+  };
+
+  const handlePlayStateChange = (isPlaying: boolean) => {
+    setIsMusicPlaying(isPlaying);
+  };
+
+  const handleTrackDetailsUpdate = (
+    trackId: string,
+    details: { title?: string; duration?: number }
+  ) => {
+    // Update the current track if it's the one being updated
+    if (currentTrack?.id === trackId) {
+      setCurrentTrack((prev) => (prev ? { ...prev, ...details } : null));
+    }
+    // Refresh playlist to show updated details
+    setPlaylist(MusicService.getPlaylistFromLocalStorage());
+  };
+
+  const handleTrackSelect = (track: MusicTrack) => {
+    setCurrentTrack(track);
+    MusicService.updateCurrentTrack(track.id);
+    setPlaylist(MusicService.getPlaylistFromLocalStorage());
+  };
+
+  const handleMusicPlayPause = () => {
+    // This will be handled by the MusicPlayer component
+    // The state update will come through handlePlayStateChange
+  };
+
+  const handleAddTrack = async (url: string) => {
+    try {
+      const newTrack = MusicService.addTrackToPlaylist(url);
+      if (newTrack) {
+        // Refresh playlist state
+        const updatedPlaylist = MusicService.getPlaylistFromLocalStorage();
+        setPlaylist(updatedPlaylist);
+
+        // If this is the first track, start playing it
+        if (updatedPlaylist.tracks.length === 1 && !currentTrack) {
+          setCurrentTrack(newTrack);
+          MusicService.updateCurrentTrack(newTrack.id);
+        }
+      }
+    } catch (error) {
+      console.error("Error adding track:", error);
+    }
+  };
+
+  // Utility functions
   const getSessionDuration = () => {
     switch (sessionState) {
       case SessionState.WORK:
@@ -188,6 +275,8 @@ export function PomodoroSession({
     }
   };
 
+  const hasPlaylist = playlist.tracks.length > 0;
+
   return (
     <FullScreenManager
       isFullScreen={isFullScreen}
@@ -195,7 +284,7 @@ export function PomodoroSession({
     >
       <div
         ref={fullScreenRef}
-        className="flex flex-col items-center justify-center"
+        className="flex flex-col items-center justify-center relative"
       >
         <TimerDisplay
           currentTime={currentTime}
@@ -208,12 +297,18 @@ export function PomodoroSession({
           getSessionDuration={getSessionDuration}
         />
 
-        <MusicPlayer volume={volume} />
+        {/* Updated MusicPlayer with new props */}
+        <MusicPlayer
+          volume={volume}
+          currentTrack={currentTrack}
+          onTrackChange={handleTrackChange}
+          onPlayStateChange={handlePlayStateChange}
+          onTrackDetailsUpdate={handleTrackDetailsUpdate}
+        />
 
         <ControlButtons
           sessionState={sessionState}
           isRunning={isRunning}
-          isFullScreen={isFullScreen}
           isFinalSession={isFinalSession}
           currentTime={currentTime}
           initialTime={initialTime}
@@ -222,7 +317,26 @@ export function PomodoroSession({
           onCancel={handleCancel}
           onSkip={handleSkip}
           onCompleteTask={handleCompleteTask}
+        />
+
+        {/* New Toolbar Component */}
+        <Toolbar
+          isFullScreen={isFullScreen}
+          showPlaylistPanel={showPlaylistPanel}
+          hasPlaylist={hasPlaylist}
           onToggleFullScreen={toggleFullScreen}
+          onTogglePlaylist={handleTogglePlaylist}
+        />
+
+        {/* New Playlist Panel Component */}
+        <PlaylistPanel
+          isOpen={showPlaylistPanel}
+          currentTrack={currentTrack}
+          isMusicPlaying={isMusicPlaying}
+          onClose={() => setShowPlaylistPanel(false)}
+          onTrackSelect={handleTrackSelect}
+          onPlayPause={handleMusicPlayPause}
+          onAddTrack={handleAddTrack}
         />
       </div>
     </FullScreenManager>

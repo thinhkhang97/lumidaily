@@ -1,19 +1,10 @@
 import { Button } from "@/components/ui/button";
-import {
-  Check,
-  Pause,
-  Play,
-  SkipForward,
-  X,
-  Maximize,
-  Minimize,
-} from "lucide-react";
+import { Check, Pause, Play, SkipForward, X } from "lucide-react";
 import { SessionState } from "./types";
 
 interface ControlButtonsProps {
   sessionState: SessionState;
   isRunning: boolean;
-  isFullScreen: boolean;
   isFinalSession: boolean;
   currentTime: number;
   initialTime: number;
@@ -22,13 +13,11 @@ interface ControlButtonsProps {
   onCancel: () => void;
   onSkip: () => void;
   onCompleteTask: () => void;
-  onToggleFullScreen: () => void;
 }
 
 export function ControlButtons({
   sessionState,
   isRunning,
-  isFullScreen,
   isFinalSession,
   currentTime,
   initialTime,
@@ -37,7 +26,6 @@ export function ControlButtons({
   onCancel,
   onSkip,
   onCompleteTask,
-  onToggleFullScreen,
 }: ControlButtonsProps) {
   const renderPlayButton = (totalTime: number) => {
     if (currentTime === totalTime && !isRunning) {
@@ -121,25 +109,6 @@ export function ControlButtons({
   return (
     <div className="flex flex-col gap-4 items-center">
       {renderSessionButtons()}
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onToggleFullScreen}
-        className="mt-4"
-      >
-        {isFullScreen ? (
-          <>
-            <Minimize className="mr-2 h-4 w-4" />
-            Exit Full Screen
-          </>
-        ) : (
-          <>
-            <Maximize className="mr-2 h-4 w-4" />
-            Enter Full Screen
-          </>
-        )}
-      </Button>
     </div>
   );
 }
