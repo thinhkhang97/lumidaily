@@ -430,7 +430,7 @@ export function PomodoroSession({
     >
       <div
         ref={fullScreenRef}
-        className="flex flex-col items-center justify-center relative"
+        className="flex flex-col items-center justify-center relative min-h-screen px-4 py-6 sm:py-8"
       >
         <TimerDisplay
           currentTime={currentTime}
@@ -471,7 +471,8 @@ export function PomodoroSession({
           onProgressChange={handleMusicProgress}
         />
 
-        <div className="mt-8">
+        {/* Control Buttons with added bottom spacing for mobile toolbar */}
+        <div className="mt-4 sm:mt-8 mb-20 sm:mb-8 w-full">
           <ControlButtons
             sessionState={sessionState}
             isRunning={isRunning}
@@ -486,7 +487,7 @@ export function PomodoroSession({
           />
         </div>
 
-        {/* New Toolbar Component */}
+        {/* Enhanced Toolbar Component */}
         <Toolbar
           isFullScreen={isFullScreen}
           showPlaylistPanel={showPlaylistPanel}

@@ -31,21 +31,24 @@ export function ControlButtons({
     if (currentTime === totalTime && !isRunning) {
       return (
         <>
-          <Play className="mr-2 h-4 w-4" />
-          Start
+          <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="hidden sm:inline">Start</span>
+          <span className="sm:hidden">Start</span>
         </>
       );
     }
 
     return isRunning ? (
       <>
-        <Pause className="mr-2 h-4 w-4" />
-        Pause
+        <Pause className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="hidden sm:inline">Pause</span>
+        <span className="sm:hidden">Pause</span>
       </>
     ) : (
       <>
-        <Play className="mr-2 h-4 w-4" />
-        Resume
+        <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="hidden sm:inline">Resume</span>
+        <span className="sm:hidden">Resume</span>
       </>
     );
   };
@@ -53,9 +56,14 @@ export function ControlButtons({
   const renderSessionButtons = () => {
     if (sessionState === SessionState.COMPLETED_TASK) {
       return (
-        <div className="flex gap-4">
-          <Button variant="destructive" size="lg" onClick={onCompleteTask}>
-            <Check className="mr-2 h-4 w-4" />
+        <div className="flex flex-col gap-4 w-full max-w-xs">
+          <Button
+            variant="destructive"
+            size="lg"
+            onClick={onCompleteTask}
+            className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl"
+          >
+            <Check className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
             Complete Task
           </Button>
         </div>
@@ -64,22 +72,32 @@ export function ControlButtons({
 
     if (sessionState === SessionState.BREAK) {
       return (
-        <div className="flex gap-4">
-          <Button variant="outline" size="lg" onClick={onCancel}>
-            <X className="mr-2 h-4 w-4" />
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onCancel}
+            className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-3 sm:order-1"
+          >
+            <X className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
             Cancel
           </Button>
           <Button
             variant={isRunning ? "secondary" : "default"}
             size="lg"
             onClick={onPauseResume}
-            className="min-w-[120px] transition-all"
+            className="h-14 sm:h-10 text-lg sm:text-sm font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
           >
             {renderPlayButton(breakTime)}
           </Button>
           {sessionState === SessionState.BREAK && !isFinalSession && (
-            <Button variant="destructive" size="lg" onClick={onSkip}>
-              <SkipForward className="mr-2 h-4 w-4" />
+            <Button
+              variant="destructive"
+              size="lg"
+              onClick={onSkip}
+              className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-2 sm:order-3"
+            >
+              <SkipForward className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
               Skip
             </Button>
           )}
@@ -89,16 +107,21 @@ export function ControlButtons({
 
     // Running session buttons
     return (
-      <div className="flex gap-4">
-        <Button variant="outline" size="lg" onClick={onCancel}>
-          <X className="mr-2 h-4 w-4" />
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={onCancel}
+          className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-2 sm:order-1"
+        >
+          <X className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
           Cancel
         </Button>
         <Button
           variant={isRunning ? "secondary" : "default"}
           size="lg"
           onClick={onPauseResume}
-          className="min-w-[120px] transition-all"
+          className="h-14 sm:h-10 text-lg sm:text-sm font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
         >
           {renderPlayButton(initialTime)}
         </Button>
@@ -107,7 +130,7 @@ export function ControlButtons({
   };
 
   return (
-    <div className="flex flex-col gap-4 items-center">
+    <div className="flex flex-col gap-4 items-center w-full px-4 sm:px-0">
       {renderSessionButtons()}
     </div>
   );
