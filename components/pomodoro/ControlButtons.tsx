@@ -107,7 +107,7 @@ export function ControlButtons({
 
     // Running session buttons
     return (
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none">
+      <div className="flex flex-col sm:flex-row sm:justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none">
         <Button
           variant="outline"
           size="lg"
