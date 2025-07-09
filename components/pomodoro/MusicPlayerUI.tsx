@@ -90,7 +90,7 @@ export function MusicPlayerUI({
         </div>
 
         <div className="flex flex-row justify-between">
-          <span className="w-1/4"></span>
+          <span className="w-3/10"></span>
           {/* Controls */}
           <div className="flex items-center justify-center gap-2">
             <Button
@@ -128,7 +128,7 @@ export function MusicPlayerUI({
           </div>
 
           {/* Volume Control */}
-          <div className="flex items-center gap-2 w-1/4">
+          <div className="flex items-center gap-2 w-3/10">
             <Volume2 className="h-4 w-4 text-muted-foreground" />
             <Slider
               value={[volume]}
@@ -137,9 +137,6 @@ export function MusicPlayerUI({
               step={1}
               className="flex-1"
             />
-            <span className="text-xs text-muted-foreground w-8 text-right">
-              {volume}%
-            </span>
           </div>
         </div>
       </div>

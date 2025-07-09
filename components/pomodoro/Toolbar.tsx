@@ -5,22 +5,28 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Maximize, Minimize, Music, ListMusic } from "lucide-react";
+import { Maximize, Minimize, Music, ListMusic, StickyNote } from "lucide-react";
 
 interface ToolbarProps {
   isFullScreen: boolean;
   showPlaylistPanel: boolean;
+  showNotePanel: boolean;
   hasPlaylist: boolean;
+  hasNotes: boolean;
   onToggleFullScreen: () => void;
   onTogglePlaylist: () => void;
+  onToggleNotes: () => void;
 }
 
 export function Toolbar({
   isFullScreen,
   showPlaylistPanel,
+  showNotePanel,
   hasPlaylist,
+  hasNotes,
   onToggleFullScreen,
   onTogglePlaylist,
+  onToggleNotes,
 }: ToolbarProps) {
   return (
     <TooltipProvider>
@@ -84,6 +90,35 @@ export function Toolbar({
                 : "Music Playlist"}
             </TooltipContent>
           </Tooltip>
+
+          {/* Notes Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={showNotePanel ? "default" : "ghost"}
+                size="icon"
+                onClick={onToggleNotes}
+                className={`h-9 w-9 transition-colors relative ${
+                  showNotePanel
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "hover:bg-accent"
+                }`}
+              >
+                <StickyNote className="h-4 w-4" />
+                {/* Indicator dot for notes */}
+                {hasNotes && !showNotePanel && (
+                  <div className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-primary rounded-full border border-card" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {showNotePanel
+                ? "Close Notes"
+                : hasNotes
+                ? "View Notes"
+                : "Notes"}
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -112,6 +147,24 @@ export function Toolbar({
             )}
             {/* Indicator dot for active playlist */}
             {hasPlaylist && !showPlaylistPanel && (
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full border-2 border-card" />
+            )}
+          </Button>
+
+          {/* Notes Button for mobile */}
+          <Button
+            variant={showNotePanel ? "default" : "ghost"}
+            size="icon"
+            onClick={onToggleNotes}
+            className={`h-12 w-12 transition-colors relative rounded-xl ${
+              showNotePanel
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "hover:bg-accent"
+            }`}
+          >
+            <StickyNote className="h-5 w-5" />
+            {/* Indicator dot for notes */}
+            {hasNotes && !showNotePanel && (
               <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full border-2 border-card" />
             )}
           </Button>

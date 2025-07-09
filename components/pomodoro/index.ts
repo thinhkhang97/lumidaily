@@ -1,9 +1,10 @@
-export * from "./PomodoroSession";
-export * from "./TimerDisplay";
-export * from "./MusicPlayer";
-export * from "./MusicPlayerUI";
-export * from "./ControlButtons";
-export * from "./Toolbar";
-export * from "./PlaylistPanel";
-export * from "./FullScreenManager";
+export { PomodoroSession } from "./PomodoroSession";
+export { TimerDisplay } from "./TimerDisplay";
+export { MusicPlayer } from "./MusicPlayer";
+export { MusicPlayerUI } from "./MusicPlayerUI";
+export { ControlButtons } from "./ControlButtons";
+export { Toolbar } from "./Toolbar";
+export { PlaylistPanel } from "./PlaylistPanel";
+export { NotePanel } from "./NotePanel";
+export { FullScreenManager, useFullScreen } from "./FullScreenManager";
 export * from "./types";

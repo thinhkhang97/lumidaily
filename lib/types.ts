@@ -6,6 +6,14 @@ export interface Task {
   completedSessions: number;
   completed: boolean;
   date: string; // ISO format date string (YYYY-MM-DD)
+  notes?: Note[]; // Array of notes associated with this task
+}
+
+export interface Note {
+  id: string;
+  content: string;
+  createdAt: string; // ISO format date string
+  taskId: string;
 }
 
 export interface Quote {

@@ -7,10 +7,12 @@ import { MusicPlayerUI } from "./MusicPlayerUI";
 import { ControlButtons } from "./ControlButtons";
 import { Toolbar } from "./Toolbar";
 import { PlaylistPanel } from "./PlaylistPanel";
+import { NotePanel } from "./NotePanel";
 import { FullScreenManager, useFullScreen } from "./FullScreenManager";
 import { PomodoroSessionProps, SessionState, FullScreenElement } from "./types";
 import { MusicTrack } from "@/lib/types";
 import { MusicService } from "@/lib/services/MusicService";
+import { NoteService } from "@/lib/services/NoteService";
 
 export function PomodoroSession({
   task,
@@ -45,6 +47,10 @@ export function PomodoroSession({
     MusicService.getPlaylistFromLocalStorage()
   );
 
+  // Note-related state
+  const [showNotePanel, setShowNotePanel] = useState<boolean>(false);
+  const [hasNotes, setHasNotes] = useState<boolean>(false);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fullScreenRef = useRef<HTMLDivElement>(null);
   const originalTitle = useRef<string>(document.title);
@@ -64,6 +70,14 @@ export function PomodoroSession({
     }
     setPlaylist(MusicService.getPlaylistFromLocalStorage());
   }, []);
+
+  // Check if task has notes
+  useEffect(() => {
+    if (task) {
+      const taskNotes = NoteService.getNotesForTask(task.id);
+      setHasNotes(taskNotes.length > 0);
+    }
+  }, [task, showNotePanel]);
 
   // Initialize audio for timer notifications
   useEffect(() => {
@@ -259,6 +273,9 @@ export function PomodoroSession({
     if (showPlaylistPanel) {
       setShowPlaylistPanel(false);
     }
+    if (showNotePanel) {
+      setShowNotePanel(false);
+    }
     if (onCancel) onCancel();
   };
 
@@ -279,6 +296,9 @@ export function PomodoroSession({
     if (showPlaylistPanel) {
       setShowPlaylistPanel(false);
     }
+    if (showNotePanel) {
+      setShowNotePanel(false);
+    }
     onCancel?.();
   };
 
@@ -297,6 +317,9 @@ export function PomodoroSession({
   // Music handlers
   const handleTogglePlaylist = () => {
     setShowPlaylistPanel((prev) => !prev);
+    if (showNotePanel) {
+      setShowNotePanel(false);
+    }
   };
 
   const handleTrackChange = (track: MusicTrack | null) => {
@@ -423,6 +446,14 @@ export function PomodoroSession({
 
   const hasPlaylist = playlist.tracks.length > 0;
 
+  // Note handlers
+  const handleToggleNotes = () => {
+    setShowNotePanel((prev) => !prev);
+    if (showPlaylistPanel) {
+      setShowPlaylistPanel(false);
+    }
+  };
+
   return (
     <FullScreenManager
       isFullScreen={isFullScreen}
@@ -430,7 +461,7 @@ export function PomodoroSession({
     >
       <div
         ref={fullScreenRef}
-        className="flex flex-col items-center justify-center relative min-h-screen px-4 py-6 sm:py-8"
+        className="flex flex-col relative min-h-screen p-4"
       >
         <TimerDisplay
           currentTime={currentTime}
@@ -472,7 +503,7 @@ export function PomodoroSession({
         />
 
         {/* Control Buttons with added bottom spacing for mobile toolbar */}
-        <div className="mt-4 sm:mt-8 mb-20 sm:mb-8 w-full">
+        <div className="mt-6 w-full">
           <ControlButtons
             sessionState={sessionState}
             isRunning={isRunning}
@@ -491,9 +522,12 @@ export function PomodoroSession({
         <Toolbar
           isFullScreen={isFullScreen}
           showPlaylistPanel={showPlaylistPanel}
+          showNotePanel={showNotePanel}
           hasPlaylist={hasPlaylist}
+          hasNotes={hasNotes}
           onToggleFullScreen={toggleFullScreen}
           onTogglePlaylist={handleTogglePlaylist}
+          onToggleNotes={handleToggleNotes}
         />
 
         {/* New Playlist Panel Component */}
@@ -505,6 +539,13 @@ export function PomodoroSession({
           onTrackSelect={handleTrackSelect}
           onPlayPause={handleMusicPlayPause}
           onAddTrack={handleAddTrack}
+        />
+
+        {/* Note Panel Component */}
+        <NotePanel
+          isOpen={showNotePanel}
+          taskId={task?.id || null}
+          onClose={() => setShowNotePanel(false)}
         />
       </div>
     </FullScreenManager>
