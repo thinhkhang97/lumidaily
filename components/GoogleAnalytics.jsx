@@ -1,25 +1,23 @@
 "use client";
 
-import Script from 'next/script';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import * as gtag from '@/lib/gtag';
+import Script from "next/script";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import * as gtag from "@/lib/gtag";
 
 export default function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
+
   useEffect(() => {
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    const url =
+      pathname +
+      (searchParams?.toString() ? `?${searchParams.toString()}` : "");
     gtag.pageview(url);
   }, [pathname, searchParams]);
 
   return (
     <>
-      <Script
-        strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_MEASUREMENT_ID}`}
-      />
       <Script
         id="gtag-init"
         strategy="afterInteractive"
@@ -34,6 +32,10 @@ export default function GoogleAnalytics() {
           `,
         }}
       />
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_MEASUREMENT_ID}`}
+      />
     </>
   );
-} 
+}

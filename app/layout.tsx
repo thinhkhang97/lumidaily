@@ -8,6 +8,7 @@ import { MainNavbar } from "@/components/MainNavbar";
 import { ThemeScript } from "@/lib/components/ThemeScript";
 import { SWRProvider } from "@/lib/providers/SWRProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Suspense } from "react";
 
 const kalam = Kalam({
   variable: "--font-kalam",
@@ -79,7 +80,9 @@ export default function RootLayout({
       <body
         className={`${kalam.variable} ${patrickHand.variable} ${handlee.variable} antialiased`}
       >
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         <AuthProvider>
           <ThemeProvider>
             <SWRProvider>
