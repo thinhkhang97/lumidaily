@@ -66,7 +66,9 @@ export function TaskDialog({
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="task-name">Task Name</Label>
+            <Label htmlFor="task-name" className="text-base">
+              Task Name
+            </Label>
             <Input
               id="task-name"
               placeholder="Enter task name"
@@ -77,7 +79,9 @@ export function TaskDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="sessions">Planned Sessions</Label>
+            <Label htmlFor="sessions" className="text-base">
+              Planned Sessions
+            </Label>
             <Select
               value={plannedSessions.toString()}
               onValueChange={(value) => setPlannedSessions(parseInt(value))}

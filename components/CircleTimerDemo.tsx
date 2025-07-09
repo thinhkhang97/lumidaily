@@ -125,7 +125,7 @@ export function CircleTimerDemo() {
 
       <div className="grid grid-cols-2 gap-4 w-full max-w-xs">
         <div className="space-y-2">
-          <label className="text-sm">Duration (seconds)</label>
+          <label className="text-base">Duration (seconds)</label>
           <input
             type="range"
             min="5"
@@ -135,11 +135,11 @@ export function CircleTimerDemo() {
             onChange={handleDurationChange}
             className="w-full"
           />
-          <div className="text-sm text-center">{duration}s</div>
+          <div className="text-base text-center">{duration}s</div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm">Size</label>
+          <label className="text-base">Size</label>
           <input
             type="range"
             min="80"
@@ -149,7 +149,7 @@ export function CircleTimerDemo() {
             onChange={(e) => setSize(parseInt(e.target.value, 10))}
             className="w-full"
           />
-          <div className="text-sm text-center">{size}px</div>
+          <div className="text-base text-center">{size}px</div>
         </div>
       </div>
     </div>

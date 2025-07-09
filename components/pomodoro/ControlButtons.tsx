@@ -61,7 +61,7 @@ export function ControlButtons({
             variant="destructive"
             size="lg"
             onClick={onCompleteTask}
-            className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl"
+            className="h-12 sm:h-10 text-base sm:text-base font-medium rounded-xl"
           >
             <Check className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
             Complete Task
@@ -77,7 +77,7 @@ export function ControlButtons({
             variant="outline"
             size="lg"
             onClick={onCancel}
-            className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-3 sm:order-1"
+            className="h-12 sm:h-10 text-base sm:text-base font-medium rounded-xl order-3 sm:order-1"
           >
             <X className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
             Cancel
@@ -86,7 +86,7 @@ export function ControlButtons({
             variant={isRunning ? "secondary" : "default"}
             size="lg"
             onClick={onPauseResume}
-            className="h-14 sm:h-10 text-lg sm:text-sm font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
+            className="h-14 sm:h-10 text-lg sm:text-base font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
           >
             {renderPlayButton(breakTime)}
           </Button>
@@ -95,7 +95,7 @@ export function ControlButtons({
               variant="destructive"
               size="lg"
               onClick={onSkip}
-              className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-2 sm:order-3"
+              className="h-12 sm:h-10 text-base sm:text-base font-medium rounded-xl order-2 sm:order-3"
             >
               <SkipForward className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
               Skip
@@ -112,7 +112,7 @@ export function ControlButtons({
           variant="outline"
           size="lg"
           onClick={onCancel}
-          className="h-12 sm:h-10 text-base sm:text-sm font-medium rounded-xl order-2 sm:order-1"
+          className="h-12 sm:h-10 text-base sm:text-base font-medium rounded-xl order-2 sm:order-1"
         >
           <X className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
           Cancel
@@ -121,7 +121,7 @@ export function ControlButtons({
           variant={isRunning ? "secondary" : "default"}
           size="lg"
           onClick={onPauseResume}
-          className="h-14 sm:h-10 text-lg sm:text-sm font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
+          className="h-14 sm:h-10 text-lg sm:text-base font-medium rounded-xl transition-all order-1 sm:order-2 min-w-[140px] sm:min-w-[120px]"
         >
           {renderPlayButton(initialTime)}
         </Button>

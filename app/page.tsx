@@ -13,7 +13,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="inline-block bg-secondary/30 px-4 py-2 rounded-full border border-secondary/40">
-              <p className="text-sm font-accent">Wellness-First Productivity</p>
+              <p className="text-base font-accent">
+                Wellness-First Productivity
+              </p>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading">
               Transform productivity into a{" "}
@@ -52,23 +54,23 @@ export default function Home() {
                 >
                   <div className="text-center">
                     <span className="text-3xl font-medium">20:00</span>
-                    <p className="text-sm opacity-80">Focus Time</p>
+                    <p className="text-base opacity-80">Focus Time</p>
                   </div>
                 </CircleTimer>
                 <div className="w-full space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="h-5 w-5 rounded-full bg-primary flex-shrink-0"></div>
-                    <p className="text-sm line-through opacity-70">
+                    <p className="text-base line-through opacity-70">
                       Review PRD document
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
-                    <p className="text-sm">Design landing page wireframe</p>
+                    <p className="text-base">Design landing page wireframe</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
-                    <p className="text-sm">Implement responsive layout</p>
+                    <p className="text-base">Implement responsive layout</p>
                   </div>
                 </div>
               </div>
@@ -279,7 +281,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <span className="inline-block bg-accent/30 px-4 py-2 rounded-full border border-accent/40 mb-4">
-              <p className="text-sm font-accent">Roadmap</p>
+              <p className="text-base font-accent">Roadmap</p>
             </span>
             <h2 className="text-3xl md:text-4xl font-heading mb-4">
               Exciting features on the horizon
@@ -429,7 +431,7 @@ export default function Home() {
               <div className="h-10 w-10 rounded-full bg-primary/20"></div>
               <div>
                 <p className="font-medium">Sarah K.</p>
-                <p className="text-sm opacity-70">Marketing Manager</p>
+                <p className="text-base opacity-70">Marketing Manager</p>
               </div>
             </div>
           </div>
@@ -444,7 +446,7 @@ export default function Home() {
               <div className="h-10 w-10 rounded-full bg-secondary/20"></div>
               <div>
                 <p className="font-medium">Marcus T.</p>
-                <p className="text-sm opacity-70">Freelance Developer</p>
+                <p className="text-base opacity-70">Freelance Developer</p>
               </div>
             </div>
           </div>
@@ -459,7 +461,7 @@ export default function Home() {
               <div className="h-10 w-10 rounded-full bg-accent/20"></div>
               <div>
                 <p className="font-medium">Elena J.</p>
-                <p className="text-sm opacity-70">Graduate Student</p>
+                <p className="text-base opacity-70">Graduate Student</p>
               </div>
             </div>
           </div>
@@ -587,7 +589,7 @@ export default function Home() {
         <div className="border-t border-foreground/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="font-heading text-xl">LumiDaily</span>
-            <span className="text-sm opacity-70">© 2025</span>
+            <span className="text-base opacity-70">© 2025</span>
           </div>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-primary transition-colors">

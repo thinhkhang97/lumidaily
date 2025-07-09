@@ -157,7 +157,7 @@ export function TimerDisplay({
                 {(currentTime % 60).toString().padStart(2, "0")}
               </span>
               {sessionState === SessionState.BREAK && (
-                <span className="mt-1 text-sm text-muted-foreground">
+                <span className="mt-1 text-base text-muted-foreground">
                   Take a break!
                 </span>
               )}
@@ -166,7 +166,7 @@ export function TimerDisplay({
                   currentTime !== initialTime) ||
                   (sessionState === SessionState.BREAK &&
                     currentTime !== breakTime)) && (
-                  <span className="mt-2 text-sm font-medium text-yellow-500 dark:text-yellow-400">
+                  <span className="mt-2 text-base font-medium text-yellow-500 dark:text-yellow-400">
                     Paused
                   </span>
                 )}

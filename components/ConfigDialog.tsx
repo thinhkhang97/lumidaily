@@ -104,7 +104,7 @@ export function ConfigDialog({ open, onOpenChange }: ConfigDialogProps) {
           </div>
 
           {error && (
-            <div className="text-destructive text-sm">
+            <div className="text-destructive text-base">
               Failed to save configuration. Please try again.
             </div>
           )}

@@ -30,13 +30,13 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
 
         // File input styling
         "file:inline-flex file:h-8 file:border-0 file:bg-transparent",
-        "file:text-sm file:font-['Patrick_Hand',_cursive] file:text-foreground",
+        "file:text-base file:font-['Patrick_Hand',_cursive] file:text-foreground",
 
         // Disabled state
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:border-muted-foreground/20",
 
         // Responsive text size
-        "md:text-sm",
+        "md:text-base",
 
         className
       )}

@@ -31,7 +31,7 @@ export function MainNavbar() {
           </Link>
 
           {/* Conditional navigation */}
-          <nav className="flex space-x-6 text-sm">
+          <nav className="flex space-x-6">
             <Link
               href="/"
               className={`hover:text-primary transition-colors duration-200 ease-out ${

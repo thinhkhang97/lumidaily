@@ -59,7 +59,7 @@ export function MusicPlayerUI({
         {/* Track Info */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-2">
-            <h3 className="font-medium text-sm truncate flex-1">
+            <h3 className="font-medium text-base truncate flex-1">
               {currentTrack.title}
             </h3>
             <Button

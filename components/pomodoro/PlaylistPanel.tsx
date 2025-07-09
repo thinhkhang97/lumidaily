@@ -138,7 +138,7 @@ export function PlaylistPanel({
                 value={newTrackUrl}
                 onChange={(e) => setNewTrackUrl(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAddTrack()}
-                className="flex-1 h-12 sm:h-10 text-base sm:text-sm"
+                className="flex-1 h-12 sm:h-10 text-base sm:text-base"
                 disabled={isAddingTrack}
               />
               <Button
@@ -167,7 +167,7 @@ export function PlaylistPanel({
                 <h3 className="text-xl sm:text-lg font-medium mb-2">
                   No music yet
                 </h3>
-                <p className="text-base sm:text-sm text-muted-foreground max-w-xs">
+                <p className="text-base sm:text-base text-muted-foreground max-w-xs">
                   Add your first YouTube music video to start building your
                   playlist
                 </p>
@@ -211,7 +211,7 @@ export function PlaylistPanel({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-sm sm:text-sm font-medium truncate leading-snug">
+                              <h4 className="text-base sm:text-base font-medium truncate leading-snug">
                                 {track.title}
                               </h4>
                               <div className="flex items-center gap-2 mt-1">

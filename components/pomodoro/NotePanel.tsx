@@ -148,7 +148,7 @@ export function NotePanel({ isOpen, taskId, onClose }: NotePanelProps) {
                 {/* Note List */}
                 {!isCreatingNote && (
                   <div className="space-y-3">
-                    <h4 className="font-medium text-sm mb-2">All Notes</h4>
+                    <h4 className="font-medium text-base mb-2">All Notes</h4>
                     {notes.map((note) => {
                       const isExpanded = expandedNoteId === note.id;
                       return (
@@ -182,7 +182,7 @@ export function NotePanel({ isOpen, taskId, onClose }: NotePanelProps) {
                                 </div>
                               </div>
                               <div
-                                className={`text-sm ${
+                                className={`text-base ${
                                   isExpanded
                                     ? "whitespace-pre-wrap"
                                     : "line-clamp-2"

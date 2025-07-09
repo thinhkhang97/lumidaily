@@ -65,7 +65,7 @@ export function AppTaskTable({
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <ClipboardList className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium">No tasks yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-base text-muted-foreground mb-4">
               Create your first task to get started
             </p>
           </div>
@@ -74,9 +74,9 @@ export function AppTaskTable({
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border/30">
-                  <th className="pb-2 text-left w-[30%]">Task</th>
-                  <th className="pb-2 text-left w-[50%]">Pomodoros</th>
-                  <th className="pb-2 text-left w-[20%]">Actions</th>
+                  <th className="pb-2 text-left w-[30%] text-lg">Task</th>
+                  <th className="pb-2 text-left w-[50%] text-lg">Pomodoros</th>
+                  <th className="pb-2 text-left w-[20%] text-lg">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -89,8 +89,8 @@ export function AppTaskTable({
                       <span
                         className={
                           task.completed
-                            ? "line-through text-muted-foreground"
-                            : ""
+                            ? "line-through text-muted-foreground text-lg"
+                            : "text-lg"
                         }
                       >
                         {task.name}

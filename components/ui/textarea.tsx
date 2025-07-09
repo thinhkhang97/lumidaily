@@ -17,7 +17,7 @@ const Textarea = React.forwardRef<
         "focus:border-primary focus:bg-background/30",
         "hover:border-foreground/40",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:border-muted-foreground/20",
-        "md:text-sm",
+        "md:text-base",
         className
       )}
       ref={ref}
