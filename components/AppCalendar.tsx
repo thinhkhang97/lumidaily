@@ -2,9 +2,9 @@
 
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDateString } from "@/lib/services/TaskService";
 import { Task } from "@/lib/types";
 import { useMemo } from "react";
+import { isSameDay } from "date-fns";
 
 interface AppCalendarProps {
   tasks: Task[];
@@ -35,8 +35,9 @@ export function AppCalendar({
   // Custom modifiers for the calendar to highlight dates with tasks
   const modifiers = {
     hasTasks: (date: Date) => {
-      const dateString = formatDateString(date);
-      return datesWithTasks.has(dateString);
+      return Array.from(datesWithTasks).some((taskDate) =>
+        isSameDay(taskDate, date)
+      );
     },
   };
 
