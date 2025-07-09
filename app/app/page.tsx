@@ -5,7 +5,7 @@ import { Task } from "@/lib/types";
 import { QuoteCard } from "@/components/QuoteCard";
 import { AppTaskTable } from "@/components/AppTaskTable";
 import { AppCalendar } from "@/components/AppCalendar";
-import { PomodoroSession } from "@/components/PomodoroSession";
+import { PomodoroSession } from "@/components/pomodoro";
 import { TaskDialog } from "@/components/TaskDialog";
 import { useTasksWithDate } from "@/lib/hooks/useTasksWithDate";
 import { useAuth } from "@/lib/contexts/AuthContext";

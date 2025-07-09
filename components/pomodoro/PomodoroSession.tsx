@@ -54,7 +54,7 @@ export function PomodoroSession({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fullScreenRef = useRef<HTMLDivElement>(null);
   const originalTitle = useRef<string>(document.title);
-  const { enterFullScreen } = useFullScreen();
+  const { enterFullScreen, exitFullScreen } = useFullScreen();
 
   // Calculate isFinalSession only once to avoid re-renders
   const isFinalSession = useMemo(() => {
@@ -310,6 +310,7 @@ export function PomodoroSession({
         setIsFullScreen(true);
       }
     } else {
+      exitFullScreen();
       setIsFullScreen(false);
     }
   };
@@ -459,7 +460,12 @@ export function PomodoroSession({
       isFullScreen={isFullScreen}
       setIsFullScreen={setIsFullScreen}
     >
-      <div ref={fullScreenRef} className="flex flex-col relative p-4">
+      <div
+        ref={fullScreenRef}
+        className={`flex flex-col relative p-4 ${
+          isFullScreen ? "justify-center items-center" : ""
+        }`}
+      >
         <TimerDisplay
           currentTime={currentTime}
           sessionState={sessionState}

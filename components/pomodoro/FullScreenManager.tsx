@@ -86,5 +86,22 @@ export function useFullScreen() {
     return false;
   };
 
-  return { enterFullScreen };
+  const exitFullScreen = () => {
+    const doc = document as FullScreenDocument;
+    if (
+      doc.fullscreenElement ||
+      doc.webkitFullscreenElement ||
+      doc.msFullscreenElement
+    ) {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        doc.msExitFullscreen();
+      }
+    }
+  };
+
+  return { enterFullScreen, exitFullScreen };
 }
