@@ -459,10 +459,7 @@ export function PomodoroSession({
       isFullScreen={isFullScreen}
       setIsFullScreen={setIsFullScreen}
     >
-      <div
-        ref={fullScreenRef}
-        className="flex flex-col relative min-h-screen p-4"
-      >
+      <div ref={fullScreenRef} className="flex flex-col relative p-4">
         <TimerDisplay
           currentTime={currentTime}
           sessionState={sessionState}

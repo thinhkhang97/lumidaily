@@ -50,7 +50,7 @@ export function MainNavbar() {
             </Link>
 
             {/* Only show Insights link in app pages */}
-            {!isLandingPage && (
+            {/* {!isLandingPage && (
               <Link
                 href="/insights"
                 className={`hover:text-primary transition-colors duration-200 ease-out ${
@@ -59,7 +59,7 @@ export function MainNavbar() {
               >
                 Insights
               </Link>
-            )}
+            )} */}
           </nav>
         </div>
 
