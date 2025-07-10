@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CircleTimer } from "@/components/ui/circle-timer";
 
 export default function Home() {
   return (
@@ -22,167 +21,134 @@ export default function Home() {
               <span className="text-primary">calming practice</span>
             </h1>
             <p className="text-xl">
-              LumiDaily combines the proven Pomodoro Technique with daily
-              reflection, beautiful handwritten aesthetics, and wellness-focused
-              design for a more mindful approach to getting things done.
+              LumiDaily combines daily task management with work sessions, music
+              integration, and note-taking for a more mindful approach to
+              getting things done.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link href="/app" aria-label="Get started with LumiDaily">
-                <Button size="lg">Get Started</Button>
+                <Button size="lg">Try Now - It&apos;s Free</Button>
               </Link>
               <Link
-                href="#features"
-                aria-label="Learn more about LumiDaily features"
+                href="#use-cases"
+                aria-label="Learn more about LumiDaily use cases"
               >
                 <Button variant="outline" size="lg">
-                  Learn More
+                  See How It Works
                 </Button>
               </Link>
             </div>
           </div>
           <div className="flex justify-center">
-            <div className="relative paper-texture paper-shadow rounded-xl p-8 border border-foreground/10">
-              <div className="absolute -top-4 -right-4 bg-secondary/30 p-2 rounded-full border border-secondary/40 soft-glow">
-                <span className="font-accent">Lumi</span>
-              </div>
-              <div className="flex flex-col items-center gap-6">
-                <CircleTimer
-                  duration={1500}
-                  currentTime={1200}
-                  size={180}
-                  strokeWidth={12}
-                >
-                  <div className="text-center">
-                    <span className="text-3xl font-medium">20:00</span>
-                    <p className="text-base opacity-80">Focus Time</p>
-                  </div>
-                </CircleTimer>
-                <div className="w-full space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-5 rounded-full bg-primary flex-shrink-0"></div>
-                    <p className="text-base line-through opacity-70">
-                      Review PRD document
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
-                    <p className="text-base">Design landing page wireframe</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-5 rounded-full border-2 border-foreground/30 flex-shrink-0"></div>
-                    <p className="text-base">Implement responsive layout</p>
-                  </div>
-                </div>
-              </div>
+            {/* Actual Video - Made larger */}
+            <div className="relative paper-texture paper-shadow rounded-xl overflow-hidden w-full max-w-2xl mx-auto">
+              <video
+                className="w-full h-auto rounded-xl"
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="/images/video-poster.jpg"
+              >
+                <source
+                  src="https://hcvwdhddcekvxuyybkvz.supabase.co/storage/v1/object/public/marketing//app-full-flow.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Use Cases Section */}
       <section
-        id="features"
+        id="use-cases"
         className="bg-secondary/10 py-16 md:py-24 border-y border-secondary/20"
-        aria-label="LumiDaily features"
+        aria-label="LumiDaily use cases"
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-heading mb-4">
-              Features that promote mindfulness
+              How LumiDaily enhances your daily workflow
             </h2>
             <p className="text-xl max-w-2xl mx-auto">
-              A thoughtfully designed, paper-inspired digital experience that
-              feels personal, calming, and sustainable.
+              Three essential features working together to create a mindful and
+              productive workspace.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-primary rounded-full"></div>
+          {/* Use Case 1: Daily Task & Work Sessions */}
+          <div className="mb-12">
+            <div className="bg-background paper-shadow rounded-xl p-6 max-w-2xl mx-auto">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center">
+                  <div className="h-6 w-6 bg-primary rounded-full"></div>
+                </div>
+                <h3 className="text-2xl font-heading">
+                  Daily Task & Work Sessions
+                </h3>
               </div>
-              <h3 className="text-xl font-heading mb-2">Pomodoro Timer</h3>
-              <p>
-                Customizable focus sessions with mindful breaks to maintain
-                productivity without burnout. Adjust timer durations to match
-                your energy levels.
+              <p className="mb-3">
+                Organize your tasks and maintain focused work sessions with
+                Pomodoro-style timers.
               </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-secondary rounded-full"></div>
-              </div>
-              <h3 className="text-xl font-heading mb-2">Daily Task Planning</h3>
               <p>
-                Organize your day with session-based tracking and visual
-                progress indicators. Plan your tasks based on energy levels and
-                priorities.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-accent rounded-full"></div>
-              </div>
-              <h3 className="text-xl font-heading mb-2">Music Integration</h3>
-              <p>
-                Enhance your focus with integrated YouTube music controls.
-                Create playlists for different types of work sessions.
+                Complete tasks with clarity and track your daily progress in one
+                unified workspace.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-            {/* Feature 4 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-primary rounded-full"></div>
+          {/* Use Case 2: Music Enhanced Working */}
+          <div className="mb-12">
+            <div className="bg-background paper-shadow rounded-xl p-6 max-w-2xl mx-auto">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center">
+                  <div className="h-6 w-6 bg-secondary rounded-full"></div>
+                </div>
+                <h3 className="text-2xl font-heading">
+                  Music Enhanced Working
+                </h3>
               </div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-heading">Daily Reflection</h3>
-                <span className="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full font-medium">
-                  Coming Soon
-                </span>
-              </div>
+              <p className="mb-3">
+                Control your focus music without leaving your productivity
+                workspace.
+              </p>
               <p>
-                End each day with structured reflection to acknowledge
-                accomplishments and plan for tomorrow with clarity and purpose.
+                Built-in YouTube integration keeps your workflow uninterrupted
+                while enjoying your favorite tracks.
               </p>
             </div>
+          </div>
 
-            {/* Feature 5 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-secondary rounded-full"></div>
+          {/* Use Case 3: Taking Notes & Ideas */}
+          <div>
+            <div className="bg-background paper-shadow rounded-xl p-6 max-w-2xl mx-auto">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center">
+                  <div className="h-6 w-6 bg-accent rounded-full"></div>
+                </div>
+                <h3 className="text-2xl font-heading">
+                  Taking Notes While Working
+                </h3>
               </div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-heading">Progress Analytics</h3>
-                <span className="bg-secondary/20 text-secondary text-xs px-2 py-1 rounded-full font-medium">
-                  Coming Soon
-                </span>
-              </div>
+              <p className="mb-3">
+                Capture ideas and insights instantly without switching between
+                applications.
+              </p>
               <p>
-                Track your productivity patterns with beautiful visualizations
-                that help you understand your work habits and celebrate
-                progress.
+                Preserve your creative flow while maintaining focus on your
+                current work session.
               </p>
             </div>
+          </div>
 
-            {/* Feature 6 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-accent rounded-full"></div>
-              </div>
-              <h3 className="text-xl font-heading mb-2">Offline-First</h3>
-              <p>
-                Work without distractions - all your data is stored locally on
-                your device with optional sync capabilities coming soon.
-              </p>
-            </div>
+          <div className="text-center mt-12">
+            <Link href="/app" aria-label="Try LumiDaily's available features">
+              <Button size="lg">Experience These Features Now</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -247,17 +213,13 @@ export default function Home() {
               Designed for your well-being
             </h3>
             <p className="text-lg">
-              Traditional productivity tools often push you to do more, faster,
-              without considering your mental and emotional well-being.
-              LumiDaily takes a different approach.
+              Traditional productivity tools often push you to do more, faster.
+              LumiDaily takes a different approach with a calming,
+              paper-inspired interface that reduces digital fatigue and makes
+              productivity feel more meaningful.
             </p>
             <p className="text-lg">
-              Our calming, paper-inspired interface reduces digital fatigue. The
-              handwritten aesthetic creates a personal, human touch that makes
-              productivity feel less mechanical and more meaningful.
-            </p>
-            <p className="text-lg">
-              By combining focus sessions with reflection and mindfulness
+              By combining focus sessions with task planning and mindfulness
               practices, LumiDaily helps you build sustainable productivity
               habits that enhance your work without sacrificing your well-being.
             </p>
@@ -273,104 +235,151 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Future Features Section */}
+      {/* Upcoming Use Cases Section */}
       <section
         className="bg-accent/10 py-16 md:py-24 border-y border-accent/20"
-        aria-label="Upcoming LumiDaily features"
+        aria-label="Upcoming LumiDaily use cases"
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <span className="inline-block bg-accent/30 px-4 py-2 rounded-full border border-accent/40 mb-4">
-              <p className="text-base font-accent">Roadmap</p>
+              <p className="text-base font-accent">Coming Soon</p>
             </span>
             <h2 className="text-3xl md:text-4xl font-heading mb-4">
-              Exciting features on the horizon
+              More ways to enhance your productivity
             </h2>
             <p className="text-xl max-w-2xl mx-auto">
-              We&apos;re constantly working to make LumiDaily even better.
-              Here&apos;s what&apos;s coming next.
+              We&apos;re constantly working to add new use cases that will make
+              LumiDaily even more valuable for your workflow.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Future Feature 1 */}
-            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
-              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
-                <div className="h-6 w-6 bg-accent rounded-full"></div>
-              </div>
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-xl font-heading">Team Collaboration</h3>
-                <span className="bg-accent/20 text-accent text-xs px-2 py-1 rounded-full font-medium">
-                  Q1 2025
-                </span>
-              </div>
-              <p>
-                Synchronized group focus sessions, accountability partners, and
-                virtual co-working spaces to enhance team productivity.
-              </p>
-            </div>
-
-            {/* Future Feature 2 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Upcoming Use Case 4 */}
             <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
               <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center mb-4">
                 <div className="h-6 w-6 bg-primary rounded-full"></div>
               </div>
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-xl font-heading">Lumi Assistant</h3>
-                <span className="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full font-medium">
-                  Q2 2025
-                </span>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">
+                  Daily Reflection & Gratitude
+                </h3>
               </div>
-              <p>
-                AI-powered productivity insights, personalized focus
-                recommendations, and daily story writing based on your
-                accomplishments.
+              <p className="text-sm">
+                End each day with structured reflection to maintain perspective,
+                acknowledge accomplishments, and plan for tomorrow with clarity.
               </p>
             </div>
 
-            {/* Future Feature 3 */}
+            {/* Upcoming Use Case 5 */}
             <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
               <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
                 <div className="h-6 w-6 bg-secondary rounded-full"></div>
               </div>
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-xl font-heading">Mobile Apps</h3>
-                <span className="bg-secondary/20 text-secondary text-xs px-2 py-1 rounded-full font-medium">
-                  Q3 2025
-                </span>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">
+                  Productivity Pattern Analysis
+                </h3>
               </div>
-              <p>
-                Native iOS and Android applications with cross-device sync,
-                offline capabilities, and mobile-specific optimizations.
+              <p className="text-sm">
+                Analyze optimal work times and energy patterns to schedule
+                important tasks during peak productivity periods.
+              </p>
+            </div>
+
+            {/* Upcoming Use Case 6 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-accent rounded-full"></div>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">Team Synchronization</h3>
+              </div>
+              <p className="text-sm">
+                Enable synchronized Pomodoro sessions for teams to align focus
+                periods and respect each other&apos;s deep work time.
+              </p>
+            </div>
+
+            {/* Upcoming Use Case 7 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-primary rounded-full"></div>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">Burnout Prevention</h3>
+              </div>
+              <p className="text-sm">
+                Detect risk patterns and enforce healthy breaks to maintain
+                sustainable productivity long-term.
+              </p>
+            </div>
+
+            {/* Upcoming Use Case 8 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-secondary rounded-full"></div>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">
+                  Cross-Device Work Continuity
+                </h3>
+              </div>
+              <p className="text-sm">
+                Sync tasks and sessions across platforms to maintain workflow
+                continuity regardless of device.
+              </p>
+            </div>
+
+            {/* Upcoming Use Case 9 */}
+            <div className="bg-background paper-shadow rounded-xl p-6 border border-foreground/10 gentle-hover">
+              <div className="h-12 w-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
+                <div className="h-6 w-6 bg-accent rounded-full"></div>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-heading">
+                  Focus Quality Improvement
+                </h3>
+              </div>
+              <p className="text-sm">
+                Track distraction patterns and provide focus scoring to
+                gradually improve concentration abilities.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Developer's Note Section */}
       <section
-        className="bg-primary/10 py-16 md:py-24 border-y border-primary/20"
-        aria-label="Call to action"
+        className="container mx-auto px-4 py-16 md:py-24"
+        aria-label="About the developer"
       >
-        <div className="container mx-auto px-4 text-center">
+        <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-heading mb-6">
-            Ready to transform your productivity?
+            A personal project for mindful productivity
           </h2>
-          <p className="text-xl max-w-2xl mx-auto mb-8">
-            Join thousands of mindful professionals, students, and wellness
-            enthusiasts who have found balance with LumiDaily.
+          <p className="text-lg mb-6">
+            LumiDaily was born from my own struggle with traditional
+            productivity tools that often left me feeling more stressed than
+            productive. I wanted to create something that would help people work
+            effectively while maintaining their well-being.
+          </p>
+          <p className="text-lg mb-8">
+            As an independent developer, I&apos;m committed to building features
+            that truly serve users&apos; needs. Your feedback and early adoption
+            help shape the direction of this project.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/app" aria-label="Get started with LumiDaily now">
-              <Button size="lg">Get Started Now</Button>
+            <Link href="/app" aria-label="Join as an early adopter">
+              <Button size="lg">Join as Early Adopter</Button>
             </Link>
             <Link
-              href="#features"
-              aria-label="Learn more about LumiDaily features"
+              href="mailto:feedback@lumidaily.app"
+              aria-label="Share feedback"
             >
               <Button variant="outline" size="lg">
-                Explore Features
+                Share Your Feedback
               </Button>
             </Link>
           </div>
@@ -391,41 +400,45 @@ export default function Home() {
             </p>
           </div>
           <div>
-            <h4 className="font-heading text-lg mb-3">Features</h4>
+            <h4 className="font-heading text-lg mb-3">Available Now</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/app"
+                  className="hover:text-primary transition-colors"
+                >
                   Pomodoro Timer
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/app"
+                  className="hover:text-primary transition-colors"
+                >
                   Task Planning
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/app"
+                  className="hover:text-primary transition-colors"
+                >
                   Music Integration
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Daily Reflection
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-heading text-lg mb-3">Resources</h4>
+            <h4 className="font-heading text-lg mb-3">About The Project</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Blog
+                  Development Philosophy
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Productivity Tips
+                  Roadmap
                 </Link>
               </li>
               <li>
@@ -433,34 +446,30 @@ export default function Home() {
                   FAQ
                 </Link>
               </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Support
-                </Link>
-              </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-heading text-lg mb-3">Company</h4>
+            <h4 className="font-heading text-lg mb-3">Support Development</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  About Us
+                <Link
+                  href="mailto:feedback@lumidaily.app"
+                  className="hover:text-primary transition-colors"
+                >
+                  Send Feedback
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="mailto:contact@lumidaily.app"
+                  className="hover:text-primary transition-colors"
+                >
                   Contact
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Terms of Service
+                  Feature Requests
                 </Link>
               </li>
             </ul>
@@ -471,62 +480,8 @@ export default function Home() {
             <span className="font-heading text-xl">LumiDaily</span>
             <span className="text-base opacity-70">© 2025</span>
           </div>
-          <div className="flex gap-6">
-            <Link href="#" className="hover:text-primary transition-colors">
-              <span className="sr-only">Twitter</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-              </svg>
-            </Link>
-            <Link href="#" className="hover:text-primary transition-colors">
-              <span className="sr-only">Instagram</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-              </svg>
-            </Link>
-            <Link href="#" className="hover:text-primary transition-colors">
-              <span className="sr-only">LinkedIn</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect width="4" height="12" x="2" y="9"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-            </Link>
+          <div className="text-sm opacity-70">
+            Crafted with care by an independent developer
           </div>
         </div>
       </footer>
