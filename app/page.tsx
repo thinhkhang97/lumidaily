@@ -375,14 +375,11 @@ export default function Home() {
             <Link href="/app" aria-label="Join as an early adopter">
               <Button size="lg">Join as Early Adopter</Button>
             </Link>
-            <Link
-              href="mailto:feedback@lumidaily.app"
-              aria-label="Share feedback"
-            >
+            <FeedbackDialog>
               <Button variant="outline" size="lg">
                 Share Your Feedback
               </Button>
-            </Link>
+            </FeedbackDialog>
           </div>
         </div>
       </section>
@@ -392,7 +389,7 @@ export default function Home() {
         className="container mx-auto px-4 py-8 md:py-12"
         aria-label="Footer"
       >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <h3 className="font-heading text-xl mb-4">LumiDaily</h3>
             <p className="opacity-70">
@@ -430,26 +427,6 @@ export default function Home() {
             </ul>
           </div>
           <div>
-            <h4 className="font-heading text-lg mb-3">About The Project</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Development Philosophy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Roadmap
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  FAQ
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
             <h4 className="font-heading text-lg mb-3">Support Development</h4>
             <ul className="space-y-2">
               <li>
@@ -458,11 +435,6 @@ export default function Home() {
                     Contact & Feedback
                   </button>
                 </FeedbackDialog>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Feature Requests
-                </Link>
               </li>
             </ul>
           </div>
