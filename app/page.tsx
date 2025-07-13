@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { FeedbackDialog } from "@/components/FeedbackDialog";
 
 export default function Home() {
   return (
@@ -452,20 +453,11 @@ export default function Home() {
             <h4 className="font-heading text-lg mb-3">Support Development</h4>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="mailto:feedback@lumidaily.app"
-                  className="hover:text-primary transition-colors"
-                >
-                  Send Feedback
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="mailto:contact@lumidaily.app"
-                  className="hover:text-primary transition-colors"
-                >
-                  Contact
-                </Link>
+                <FeedbackDialog>
+                  <button className="hover:text-primary transition-colors text-left">
+                    Contact & Feedback
+                  </button>
+                </FeedbackDialog>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
