@@ -29,24 +29,24 @@ const handlee = Handlee({
 });
 
 export const metadata: Metadata = {
-  title: "LumiDaily | Mindful Productivity Planner",
+  title: "LumiDaily | Integrated Workspace for Productivity",
   description:
-    "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features. Designed for focus and well-being.",
+    "Combine task management, Pomodoro timer, music, and notes in one calming workspace. Be productive without the stress - work better while feeling better.",
   keywords:
-    "productivity, pomodoro technique, mindfulness, task management, focus timer, wellness, work-life balance",
-  authors: [{ name: "LumiDaily Team" }],
+    "productivity, pomodoro technique, task management, focus timer, wellness, work-life balance, integrated workspace, music for focus, note-taking, lumi daily",
+  authors: [{ name: "thinhkhang97" }],
   openGraph: {
-    title: "LumiDaily | Mindful Productivity Planner",
+    title: "LumiDaily | Integrated Workspace for Productivity",
     description:
-      "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features.",
+      "Combine task management, Pomodoro timer, music, and notes in one calming workspace. Be productive without the stress.",
     url: "https://lumidaily.com",
     siteName: "LumiDaily",
     images: [
       {
-        url: "/images/lumidaily-og.jpg",
+        url: "/public/lumidaily-og.png",
         width: 1200,
         height: 630,
-        alt: "LumiDaily - Mindful Productivity Planner",
+        alt: "LumiDaily - Integrated Workspace for Productivity",
       },
     ],
     locale: "en_US",
@@ -54,10 +54,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "LumiDaily | Mindful Productivity Planner",
+    title: "LumiDaily | Integrated Workspace for Productivity",
     description:
-      "Transform productivity into a calming practice with LumiDaily's Pomodoro timer, task planning, and wellness features.",
-    images: ["/images/lumidaily-twitter.jpg"],
+      "Combine task management, Pomodoro timer, music, and notes in one calming workspace. Be productive without the stress - work better while feeling better.",
+    images: ["/public/lumidaily-og.png"],
   },
   robots: {
     index: true,
